@@ -1,0 +1,93 @@
+import { Dialog, Transition } from '@headlessui/react';
+import axios from 'axios';
+import type { NextPage } from 'next';
+import { Fragment, useEffect, useState } from 'react';
+import { Portal } from 'react-portal';
+import BtnTarefaInbox from '../components/atoms/BtnTarefaInbox';
+import PageTitle from '../components/atoms/PageTitle';
+import Paragrafo from '../components/atoms/Paragrafo';
+import TableBody from '../components/atoms/TableBody';
+import TableHead from '../components/atoms/TableHead';
+import InboxModal from '../components/modals/InboxModal';
+import Menu from '../components/parts/Menu';
+import { useInboxContext, useInboxDispatch } from '../context/GlobalContext';
+import { InboxActionsTypes } from '../reducer/inboxReducer';
+
+export default function Inbox<NextPage>() {
+   const [isOpen, setIsOpen] = useState(false);
+   const inboxTasks = useInboxContext();
+   const dispatch = useInboxDispatch();
+
+   useEffect(() => {
+      const controller = new AbortController();
+      if (!inboxTasks.length) {
+         axios
+            .get('/api/inbox', { signal: controller.signal })
+            .then((res) => {
+               dispatch({
+                  type: InboxActionsTypes.addTask,
+                  payload: res.data
+               });
+            })
+            .catch((error) => {
+               console.log(error);
+            });
+         return () => {
+            controller.abort();
+         };
+      }
+   }, [dispatch, inboxTasks]);
+
+   const mapTasks = inboxTasks.map((task) => {
+      return {
+         id: task.id,
+         title: task.title
+      };
+   });
+
+   function closeModal() {
+      setIsOpen(false);
+   }
+
+   function openModal() {
+      setIsOpen(true);
+   }
+
+   return (
+      <Menu>
+         <InboxModal isOpen={isOpen} closeModal={closeModal} />
+         <section className="bg-white p-8 text-indigo-900">
+            <div className="flex flex-wrap items-center -m-2">
+               <div className="w-full md:w-1/2 p-2">
+                  <PageTitle title="Inbox" />
+                  <Paragrafo>
+                     Cadastre rapidamente as tarefas para depois processá-las
+                  </Paragrafo>
+               </div>
+               <div className="w-full md:w-1/2 p-2">
+                  <div className="flex flex-wrap justify-end -m-2">
+                     <div className="w-full md:w-auto p-2">
+                        <BtnTarefaInbox onClick={openModal} />
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </section>
+         <div className="w-full h-px bg-slate-200"></div>
+         <section>
+            <div className=" flex items-center justify-center  font-sans overflow-hidden">
+               <div className="w-full px-8">
+                  <div className="bg-white shadow-md my-6 ">
+                     <table className="w-full table-auto  rounded-lg text-indigo-900">
+                        <TableHead heads={['título', 'Ações']} />
+                        <TableBody tasks={mapTasks} />
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </section>
+      </Menu>
+   );
+}
+
+Inbox.auth = true;

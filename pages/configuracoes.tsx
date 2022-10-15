@@ -1,12 +1,12 @@
 import type { NextPage } from 'next';
 import Menu from '../components/parts/Menu';
 
-export default function Dashboard<NextPage>() {
+export default function Configurcoes<NextPage>() {
    return (
       <Menu>
-         <h1>Dashboard</h1>
+         <h1>Configurações!</h1>
       </Menu>
    );
 }
 
-Dashboard.auth = true;
+Configurcoes.auth = true;

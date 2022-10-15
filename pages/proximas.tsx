@@ -1,12 +1,12 @@
 import type { NextPage } from 'next';
 import Menu from '../components/parts/Menu';
 
-export default function Dashboard<NextPage>() {
+export default function Proximas<NextPage>() {
    return (
       <Menu>
-         <h1>Dashboard</h1>
+         <h1>Proximas!</h1>
       </Menu>
    );
 }
 
-Dashboard.auth = true;
+Proximas.auth = true;

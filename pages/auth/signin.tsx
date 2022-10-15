@@ -21,7 +21,7 @@ export default function SignIn() {
       const restul = await signIn('credentials', {
          email,
          password,
-         callbackUrl: '/loggedin',
+         callbackUrl: '/',
          redirect: true
       });
    }

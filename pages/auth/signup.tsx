@@ -25,7 +25,7 @@ export default function SignUp() {
          signIn('credentials', {
             email,
             password,
-            callbackUrl: '/loggedin',
+            callbackUrl: '/',
             redirect: true
          });
       }

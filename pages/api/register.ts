@@ -18,7 +18,6 @@ export default async function handler(
                password: hash
             }
          });
-         console.log(createdUser);
          return res.status(200).end();
       } catch (err: any) {
          return res.status(503).json({ err: err.toString() });

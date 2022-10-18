@@ -3,7 +3,7 @@ import axios from 'axios';
 import type { NextPage } from 'next';
 import { Fragment, useEffect, useState } from 'react';
 import { Portal } from 'react-portal';
-import BtnTarefaInbox from '../components/atoms/BtnTarefaInbox';
+import BtnTarefaInbox from '../components/atoms/BtnAdd';
 import PageTitle from '../components/atoms/PageTitle';
 import Paragrafo from '../components/atoms/Paragrafo';
 import TableBody from '../components/atoms/TableBody';
@@ -56,7 +56,7 @@ export default function Inbox<NextPage>() {
    return (
       <Menu>
          <InboxModal isOpen={isOpen} closeModal={closeModal} />
-         <section className="bg-white p-8 text-indigo-900">
+         <section className="bg-white p-8 text-indigo-900 sticky top-0 z-20 shadow-md">
             <div className="flex flex-wrap items-center -m-2">
                <div className="w-full md:w-1/2 p-2">
                   <PageTitle title="Inbox" />
@@ -75,7 +75,7 @@ export default function Inbox<NextPage>() {
          </section>
          <div className="w-full h-px bg-slate-200"></div>
          <section>
-            <div className=" flex items-center justify-center  font-sans overflow-hidden">
+            <div className=" flex items-center justify-center  font-sans overflow-y-auto">
                <div className="w-full px-8">
                   <div className="bg-white shadow-md my-6 ">
                      <table className="w-full table-auto  rounded-lg text-indigo-900">

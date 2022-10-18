@@ -19,7 +19,6 @@ export default function TableRow({ task }: TableRowsProps) {
 
    function deleteInbox() {
       axios.delete(`/api/inbox/${task.id}`).then((res) => {
-         console.log(res.data);
          dispatch({ type: InboxActionsTypes.removeTask, payload: [res.data] });
       });
    }

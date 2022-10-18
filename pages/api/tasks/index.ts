@@ -1,3 +1,4 @@
+import { request } from 'http';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getToken } from 'next-auth/jwt';
 import prisma from '../../../lib/prisma';
@@ -9,13 +10,13 @@ export default async function handler(
    if (req.method === 'GET') {
       const token = await getToken({ req });
       if (token) {
-         const inbox = await prisma.inbox.findMany({
+         const tarefas = await prisma.tarefa.findMany({
             where: {
                userId: String(token.id)
             }
          });
-         if (inbox) {
-            res.status(200).json(inbox);
+         if (tarefas) {
+            res.status(200).json(tarefas);
          } else {
             res.status(404).json({ error: 'Not Found' });
          }
@@ -25,14 +26,18 @@ export default async function handler(
    } else if (req.method === 'POST') {
       const token = await getToken({ req });
       if (token) {
-         const { title } = req.body;
-         const inbox = await prisma.inbox.create({
+         const { title, description, status, startDate, dueDate } = req.body;
+         const tarefa = await prisma.tarefa.create({
             data: {
                title: title,
+               description: description,
+               status: status,
+               startDate: new Date(startDate),
+               dueDate: new Date(dueDate),
                userId: String(token.id)
             }
          });
-         res.status(201).json(inbox);
+         res.status(201).json(tarefa);
       } else {
          return res
             .status(405)

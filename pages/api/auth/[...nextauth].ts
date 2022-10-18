@@ -26,7 +26,6 @@ export default NextAuth({
                      email: credentials?.email
                   }
                });
-               // console.log(user);
                if (user !== null) {
                   if (
                      await bcrypt.compare(credentials.password, user.password)

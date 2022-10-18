@@ -20,6 +20,7 @@ enum StatusProjeto {
 enum StatusTarefa {
   proximasAcoes
   emProgresso
+  pausada
   aguardando
   planejada
   concluida

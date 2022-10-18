@@ -7,7 +7,7 @@ import { InboxActionsTypes } from '../../reducer/inboxReducer';
 
 interface InboxModalProps {
    isOpen: boolean;
-   closeModal: any;
+   closeModal: () => void;
    update?: boolean;
    content?: string;
    id?: string;
@@ -60,7 +60,7 @@ export default function InboxModal({
          <Transition show={isOpen} as={Fragment}>
             <Dialog
                as="div"
-               className="relative z-10 "
+               className="relative z-30 "
                onClose={() => {
                   setTitle('');
                   closeModal();
@@ -88,12 +88,12 @@ export default function InboxModal({
                         leaveFrom="opacity-100 scale-100 mt-10"
                         leaveTo="opacity-0 scale-95 -mt-10"
                      >
-                        <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="w-full border border-indigo-300  max-w-md transform overflow-hidden rounded-xl bg-indigo-50 p-6 text-left align-middle shadow-xl transition-all">
                            <Dialog.Title
                               as="h3"
-                              className="text-2xl font-medium text-center leading-6 text-indigo-900"
+                              className="text-2xl font-bold text-center leading-6 text-indigo-900"
                            >
-                              Nova tarefa
+                              NOVO INBOX
                            </Dialog.Title>
                            <div className="mt-5">
                               <p className="text-sm text-justify text-gray-600">
@@ -105,7 +105,7 @@ export default function InboxModal({
                                  <textarea
                                     value={title}
                                     onChange={(e) => setTitle(e.target.value)}
-                                    className="border border-indigo-200 rounded-lg p-3 text-justify"
+                                    className="border bg-indigo-50 border-indigo-600 rounded-lg p-3 text-justify"
                                     name="tarefa"
                                     id="tarefa"
                                     cols={40}

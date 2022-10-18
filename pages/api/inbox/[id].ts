@@ -16,7 +16,6 @@ export default async function handler(
                id: String(id)
             }
          });
-         console.log(`Deleted ${deletedInbox}`);
          if (deletedInbox) {
             res.status(200).json(deletedInbox);
          } else {
@@ -34,7 +33,6 @@ export default async function handler(
             },
             data: data
          });
-         console.log(`Updated ${updatedInbox}`);
          if (updatedInbox) {
             res.status(200).json(updatedInbox);
          } else {

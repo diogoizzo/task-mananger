@@ -1,11 +1,12 @@
-import type { NextPage } from 'next';
-import Menu from '../components/parts/Menu';
+import TasksSections from '../components/sections/TaskSections';
 
 export default function Aguardando<NextPage>() {
    return (
-      <Menu>
-         <h1>Aguardando!</h1>
-      </Menu>
+      <TasksSections
+         titulo="Tarefas Aguardando"
+         subtitulo="Veja aqui todas as terfas que estão aguardando retorno"
+         status="aguardando"
+      />
    );
 }
 

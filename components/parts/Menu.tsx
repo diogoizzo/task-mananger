@@ -77,7 +77,7 @@ export default function Menu({ children }: any) {
                               />
                            </svg>
                         }
-                        path={'/tasks'}
+                        path={'/tarefas'}
                      />
                      <MenuItem
                         title="Projetos"

@@ -11,10 +11,18 @@ interface TasksProps {
    openModal: () => void;
    setModalContent: Dispatch<SetStateAction<ITask | null>>;
    tasks: Task[];
+   status: String;
 }
 
-function TasksList({ tasks, setModalContent, openModal }: TasksProps) {
-   const filteredTasks = tasks.filter((task) => task.status !== 'concluida');
+function TasksList({ tasks, setModalContent, openModal, status }: TasksProps) {
+   let filteredTasks;
+
+   if (status === 'ativas') {
+      filteredTasks = tasks.filter((task) => task.status !== 'concluida');
+   } else {
+      filteredTasks = tasks.filter((task) => task.status === status);
+   }
+
    const tasksWithTime = filteredTasks.map((item: Task) => {
       let diffToNow = dayjs(item?.dueDate).diff(dayjs(), 'day');
       item.leftTime = Number(diffToNow > 0 ? diffToNow : 0);

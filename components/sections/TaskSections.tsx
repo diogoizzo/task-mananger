@@ -1,16 +1,26 @@
 import { useEffect, useState } from 'react';
-import BtnAdd from '../components/atoms/BtnAdd';
-import PageTitle from '../components/atoms/PageTitle';
-import Paragrafo from '../components/atoms/Paragrafo';
-import TasksModal from '../components/modals/TasksModal';
-import Menu from '../components/parts/Menu';
-import TasksList from '../components/sections/TasksList';
-import { useTasksContext, useTasksDispatch } from '../context/GlobalContext';
+import BtnAdd from '../atoms/BtnAdd';
+import PageTitle from '../atoms/PageTitle';
+import Paragrafo from '../atoms/Paragrafo';
+import TasksModal from '../modals/TasksModal';
+import Menu from '../parts/Menu';
+import TasksList from './TasksList';
+import { useTasksContext, useTasksDispatch } from '../../context/GlobalContext';
 import axios from 'axios';
-import { TasksActionsTypes } from '../reducer/tasksReducer';
-import { ITask } from '../interfaces/ITask';
+import { TasksActionsTypes } from '../../reducer/tasksReducer';
+import { ITask } from '../../interfaces/ITask';
 
-function Tasks() {
+interface TasksSectionsProps {
+   titulo: string;
+   subtitulo: string;
+   status: string;
+}
+
+export default function TasksSections({
+   titulo,
+   subtitulo,
+   status
+}: TasksSectionsProps) {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<ITask | null>(null);
    const tasks = useTasksContext();
@@ -55,8 +65,8 @@ function Tasks() {
          <section className="bg-white p-8 text-indigo-900 sticky top-0 z-30 shadow-md ">
             <div className="flex flex-wrap items-center -m-2">
                <div className="w-full md:w-1/2 p-2">
-                  <PageTitle title="Tarefas" />
-                  <Paragrafo>Veja aqui todas as suas tarefas</Paragrafo>
+                  <PageTitle title={titulo} />
+                  <Paragrafo>{subtitulo}</Paragrafo>
                </div>
                <div className="w-full md:w-1/2 p-2">
                   <div className="flex flex-wrap justify-end -m-2">
@@ -72,8 +82,8 @@ function Tasks() {
             tasks={tasks}
             openModal={openModal}
             setModalContent={setModalContent}
+            status={status}
          />
       </Menu>
    );
 }
-export default Tasks;

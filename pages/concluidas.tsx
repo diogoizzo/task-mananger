@@ -1,12 +1,17 @@
 import type { NextPage } from 'next';
-import Menu from '../components/parts/Menu';
+import TasksSections from '../components/sections/TaskSections';
 
 export default function Concluidas<NextPage>() {
    return (
-      <Menu>
-         <h1>Concluidas!</h1>
-      </Menu>
+      <TasksSections
+         titulo="Tarefas Concluídas"
+         subtitulo="Veja aqui todas as tarefas que já foram concluídas"
+         status="concluida"
+      />
    );
+   {
+      /* TODO Alterar card de tarefas para não aparecer o tempo restante, já que a tarefa já foi concluída*/
+   }
 }
 
 Concluidas.auth = true;

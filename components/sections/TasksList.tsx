@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
+import TaskDueCard from '../parts/TaskDueCard';
 import TaskCard from '../parts/TaskCard';
 import dayjs from 'dayjs';
 import { ITask } from '../../interfaces/ITask';
@@ -29,22 +30,30 @@ function TasksList({ tasks, setModalContent, openModal, status }: TasksProps) {
       return item;
    });
 
-   const orderedTasks = tasksWithTime.sort(
-      (a: any, b: any) => a.leftTime - b.leftTime
-   );
+   const orderedTasks =
+      status === 'ativas'
+         ? tasksWithTime.sort((a: any, b: any) => a.leftTime - b.leftTime)
+         : filteredTasks.sort(
+              (a: any, b: any) =>
+                 Number(new Date(b.dueAt)) - Number(new Date(a.dueAt))
+           );
 
    return (
       <section>
          <div className=" flex h-full items-center justify-center  font-sans overflow-y-auto">
             <div className="w-full px-8 pb-8">
-               {orderedTasks.map((task: Task) => (
-                  <TaskCard
-                     key={task.id}
-                     task={task}
-                     openModal={openModal}
-                     setModalContent={setModalContent}
-                  />
-               ))}
+               {status !== 'concluida'
+                  ? orderedTasks.map((task: Task) => (
+                       <TaskCard
+                          key={task.id}
+                          task={task}
+                          openModal={openModal}
+                          setModalContent={setModalContent}
+                       />
+                    ))
+                  : orderedTasks.map((task: Task) => (
+                       <TaskDueCard key={task.id} task={task} />
+                    ))}
             </div>
          </div>
       </section>

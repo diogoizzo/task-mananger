@@ -6,4 +6,5 @@ export interface ITask {
    description: string;
    status: string;
    leftTime?: number;
+   dueAt?: string;
 }

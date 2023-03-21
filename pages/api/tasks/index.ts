@@ -16,6 +16,7 @@ export default async function handler(
             }
          });
          if (tarefas) {
+            console.log(tarefas);
             res.status(200).json(tarefas);
          } else {
             res.status(404).json({ error: 'Not Found' });

@@ -55,7 +55,8 @@ export default async function handler(
                dueDate: undefined,
                title: undefined,
                description: undefined,
-               status: 'concluida'
+               status: 'concluida',
+               dueAt: new Date(Date.now())
             }
          });
          if (completedTask) {

@@ -36,7 +36,7 @@ export function useTasksDispatch() {
 }
 
 export default function GlobalContext({
-   children
+   children 
 }: GlobalContextProviderProps) {
    const [inboxState, inboxDispatch] = useReducer(inboxReducer, []);
    const [tasksState, tasksDispatch] = useReducer(tasksReducer, []);

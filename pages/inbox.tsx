@@ -20,7 +20,7 @@ export default function Inbox<NextPage>() {
 
    useEffect(() => {
       const controller = new AbortController();
-      if (!inboxTasks.length) {
+      if (!inboxTasks?.length) {
          axios
             .get('/api/inbox', { signal: controller.signal })
             .then((res) => {

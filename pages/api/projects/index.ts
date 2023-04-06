@@ -9,13 +9,13 @@ export default async function handler(
    if (req.method === 'GET') {
       const token = await getToken({ req });
       if (token) {
-         const tarefas = await prisma.tarefa.findMany({
+         const projects = await prisma.projeto.findMany({
             where: {
                userId: String(token.id)
             }
          });
-         if (tarefas) {
-            res.status(200).json(tarefas);
+         if (projects) {
+            res.status(200).json(projects);
          } else {
             res.status(404).json({ error: 'Not Found' });
          }
@@ -25,12 +25,11 @@ export default async function handler(
    } else if (req.method === 'POST') {
       const token = await getToken({ req });
       if (token) {
-         const { title, description, status, startDate, dueDate } = req.body;
-         const tarefa = await prisma.tarefa.create({
+         const { title, description, startDate, dueDate } = req.body;
+         const tarefa = await prisma.projeto.create({
             data: {
                title: title,
                description: description,
-               status: status,
                startDate: new Date(startDate),
                dueDate: new Date(dueDate),
                userId: String(token.id)

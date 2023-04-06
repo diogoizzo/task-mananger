@@ -104,10 +104,11 @@ export default function SignUp() {
 
                   <p className="text-center font-extrabold">
                      Já possui uma conta?{' '}
-                     <Link href={'/auth/signin'}>
-                        <a className="text-indigo-500 hover:underline" href="#">
-                           Entrar
-                        </a>
+                     <Link
+                        href={'/auth/signin'}
+                        className="text-indigo-500 hover:underline"
+                     >
+                        Entrar
                      </Link>
                   </p>
                </form>

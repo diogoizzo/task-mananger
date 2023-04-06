@@ -1,47 +1,56 @@
-import axios from 'axios';
-import dayjs from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
-import { useTasksDispatch } from '../../context/GlobalContext';
-import { ITask } from '../../interfaces/ITask';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
-import mapStatus from '../../utils/mapStatus';
+import IProject from '../../interfaces/IProject';
+import dayjs from 'dayjs';
+import axios from 'axios';
+import { useProjectDispatch } from '../../context/GlobalContext';
+import { ProjectActionsTypes } from '../../reducer/projectReducer';
 
-interface Task {
-   task: ITask;
+interface ProjectCardProps {
+   project: IProject;
    openModal: () => void;
-   setModalContent: Dispatch<SetStateAction<ITask | null>>;
+   setModalContent: Dispatch<SetStateAction<IProject | null>>;
 }
 
-function TaskCard({ task, setModalContent, openModal }: Task) {
-   const dispatch = useTasksDispatch();
+function ProjectCard({
+   project,
+   openModal,
+   setModalContent
+}: ProjectCardProps) {
+   const dispatch = useProjectDispatch();
 
-   function deleteTask() {
-      axios.delete(`/api/tasks/${task.id}`).then((res) => {
-         dispatch({ type: TasksActionsTypes.removeTask, payload: [res.data] });
+   function deleteProject() {
+      axios.delete(`/api/projects/${project.id}`).then((res) => {
+         dispatch({
+            type: ProjectActionsTypes.removeProject,
+            payload: [res.data]
+         });
       });
    }
-   function completeTask() {
-      axios.patch(`/api/tasks/${task.id}`).then((res) => {
-         dispatch({ type: TasksActionsTypes.updateTask, payload: [res.data] });
+
+   function completeProject() {
+      axios.patch(`/api/projects/${project.id}`).then((res) => {
+         dispatch({
+            type: ProjectActionsTypes.updateProject,
+            payload: [res.data]
+         });
       });
    }
+
    return (
       <div className="bg-gray-50 min-h-[195px] flex relative shadow-md rounded-md mt-8 ">
          <div className="w-2/3 p-5 flex flex-col justify-between">
             <div>
                <h2 className="font-semibold text-xl text-indigo-900">
-                  {task.title}
+                  {project.title}
                </h2>
                <p className="text-sm text-indigo-800 mt-2">
-                  {task.description}
+                  {project.description}
                </p>
             </div>
-            <div className="font-semibold mt-3 tracking-wider shadow-sm shadow-indigo-900/50 text-xs bg-indigo-800 w-fit p-1 px-5 uppercase rounded-full text-indigo-100">
-               {mapStatus(task)}
-            </div>
+
             <div className="flex item-center justify-start text-indigo-900 mt-5">
                <div
-                  onClick={completeTask}
+                  onClick={completeProject}
                   className="w-5 mr-2  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform"
                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -50,7 +59,7 @@ function TaskCard({ task, setModalContent, openModal }: Task) {
                </div>
                <div
                   onClick={() => {
-                     setModalContent(task);
+                     setModalContent(project);
                      openModal();
                   }}
                   className="w-5 mr-2 transform hover:text-indigo-500 hover:scale-125 transition-transform"
@@ -70,7 +79,7 @@ function TaskCard({ task, setModalContent, openModal }: Task) {
                   </svg>
                </div>
                <div
-                  onClick={deleteTask}
+                  onClick={deleteProject}
                   className="w-5 transform hover:text-indigo-500 hover:scale-125 transition-transform"
                >
                   <svg
@@ -93,7 +102,7 @@ function TaskCard({ task, setModalContent, openModal }: Task) {
             <div className=" bg-indigo-200 relative -top-5 h-32 w-32 flex flex-col justify-center items-center shadow-md shadow-indigo-900/20 rounded-full border-4 border-gray-100">
                <div className="text-center relative -top-1">
                   <p className="text-5xl font-bold leading-none text-indigo-900">
-                     {task.leftTime}
+                     {project.leftTime}
                   </p>
                   <p className="text-center text-indigo-700 text-xs leading-none">
                      dias <br /> restantes
@@ -101,10 +110,10 @@ function TaskCard({ task, setModalContent, openModal }: Task) {
                </div>
             </div>
             <div className="mt-3 absolute bottom-0 py-2 w-full justify-self-end text-center font-semibold text-indigo-100 rounded-br-md bg-indigo-900">
-               {`Prazo final em ${dayjs(task.dueDate).format('DD/MM/YYYY')}`}
+               {`Prazo final em ${dayjs(project.dueDate).format('DD/MM/YYYY')}`}
             </div>
          </div>
       </div>
    );
 }
-export default TaskCard;
+export default ProjectCard;

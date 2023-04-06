@@ -3,71 +3,67 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
 import { Portal } from 'react-portal';
-import { useTasksDispatch } from '../../context/GlobalContext';
-import { ITask } from '../../interfaces/ITask';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
-import Input from '../atoms/Input';
+import { useProjectDispatch } from '../../context/GlobalContext';
 
-interface TasksModalProps {
-   modalContent: ITask | null;
-   setModalContent: Dispatch<SetStateAction<ITask | null>>;
+import Input from '../atoms/Input';
+import IProject from '../../interfaces/IProject';
+import { ProjectActionsTypes } from '../../reducer/projectReducer';
+
+interface ProjectModalProps {
+   modalContent: IProject | null;
+   setModalContent: Dispatch<SetStateAction<IProject | null>>;
    isOpen: boolean;
    closeModal: () => void;
 }
 
-export default function TasksModal({
+export default function ProjectModal({
    isOpen,
    closeModal,
    modalContent,
    setModalContent
-}: TasksModalProps) {
+}: ProjectModalProps) {
+   const dispatch = useProjectDispatch();
    const [formData, setFormData] = useState({
       startDate: '',
       dueDate: '',
       title: '',
-      description: '',
-      status: ''
+      description: ''
    });
 
-   // TODO corrigir e ajustar parte do projeto (select)
    useEffect(() => {
       if (modalContent) {
          setFormData({
             startDate: dayjs(modalContent.startDate).format('YYYY-MM-DD'),
             dueDate: dayjs(modalContent.dueDate).format('YYYY-MM-DD'),
             title: modalContent.title,
-            description: modalContent.description,
-            status: modalContent.status
+            description: modalContent.description
          });
       }
    }, [modalContent]);
-
-   const dispatch = useTasksDispatch();
 
    function clearFormData() {
       setFormData({
          startDate: '',
          dueDate: '',
          title: '',
-         description: '',
-         status: ''
+         description: ''
       });
    }
 
-   function criaTarefa() {
-      axios.post('/api/tasks', formData).then((res) => {
+   function createProject() {
+      axios.post('/api/projects', formData).then((res) => {
          dispatch({
-            type: TasksActionsTypes.addTask,
+            type: ProjectActionsTypes.addProject,
             payload: [res.data]
          });
       });
       clearFormData();
       closeModal();
    }
-   function atualizaTarefa() {
-      axios.put(`/api/tasks/${modalContent?.id}`, formData).then((res) => {
+   function updateProject() {
+      axios.put(`/api/projects/${modalContent?.id}`, formData).then((res) => {
          dispatch({
-            type: TasksActionsTypes.updateTask,
+            type: ProjectActionsTypes.updateProject,
             payload: [res.data]
          });
       });
@@ -79,7 +75,6 @@ export default function TasksModal({
       clearFormData();
       closeModal();
    }
-
    return (
       <Portal>
          <Transition show={isOpen} as={Fragment}>
@@ -119,7 +114,7 @@ export default function TasksModal({
                               as="h3"
                               className="text-2xl font-bold capitalize text-center leading-6 text-indigo-900"
                            >
-                              Nova Tarefa
+                              Novo Projeto
                            </Dialog.Title>
                            <form className="mt-10">
                               <Input
@@ -131,7 +126,7 @@ export default function TasksModal({
                                     }))
                                  }
                                  titulo="Nome"
-                                 placeholder="Insira o nome da tarefa"
+                                 placeholder="Insira o nome do projeto"
                               />
 
                               <div className="flex w-full justify-between flex-wrap ">
@@ -146,7 +141,6 @@ export default function TasksModal({
                                        }
                                        titulo="Data de início"
                                        type="date"
-                                       placeholder="Data de início da tarefa"
                                     />
                                  </div>
                                  <div className="w-1/2 mt-3 pl-1">
@@ -161,83 +155,6 @@ export default function TasksModal({
                                        titulo="Prazo final"
                                        type="date"
                                     />
-                                 </div>
-                                 <div className="w-full mt-3">
-                                    <div className="relative w-full mt-3 h-12 py-4 px-3 border border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg">
-                                       <label
-                                          htmlFor="status"
-                                          className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50"
-                                       >
-                                          Status
-                                       </label>
-
-                                       <select
-                                          value={formData.status}
-                                          onChange={(e) =>
-                                             setFormData((prev) => ({
-                                                ...prev,
-                                                status: e.target.value
-                                             }))
-                                          }
-                                          id="status"
-                                          className="w-full outline-none bg-transparent text-gray-600 placeholder-gray-400 font-semibold"
-                                       >
-                                          <option value="">
-                                             Escolha o status atual da tarefa
-                                          </option>
-                                          <option value="proximasAcoes">
-                                             Próximas ações
-                                          </option>
-                                          <option value="emProgresso">
-                                             Em progresso
-                                          </option>
-                                          <option value="pausada">
-                                             Pausada
-                                          </option>
-                                          <option value="aguardando">
-                                             Aguardando
-                                          </option>
-                                          <option value="planejada">
-                                             Planejada
-                                          </option>
-                                          <option value="concluida">
-                                             Concluída
-                                          </option>
-                                       </select>
-                                    </div>
-                                 </div>
-                                 <div className="w-full mt-3">
-                                    <div className="relative w-full mt-3 h-12 py-4 px-3 border border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg">
-                                       <label
-                                          htmlFor="status"
-                                          className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50"
-                                       >
-                                          Projeto
-                                       </label>
-
-                                       <select
-                                          id="status"
-                                          className="w-full outline-none bg-transparent text-gray-600 placeholder-gray-400 font-semibold"
-                                       >
-                                          <option value="">
-                                             Essa tarefa pertence a algum
-                                             projeto?
-                                          </option>
-                                          {/* TODO fazer o sistema puxar todos os nomes de projetos e listar aqui para escolher */}
-                                          <option value="proximasAcoes">
-                                             Não pertence a nenhum projeto
-                                          </option>
-                                          <option value="proximasAcoes">
-                                             Projeto 1
-                                          </option>
-                                          <option value="emProgresso">
-                                             Projeto 2
-                                          </option>
-                                          <option value="pausada">
-                                             Projeto 3
-                                          </option>
-                                       </select>
-                                    </div>
                                  </div>
                                  <div className="relative w-full text-center mt-6 h-28 ">
                                     <span className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50">
@@ -254,7 +171,7 @@ export default function TasksModal({
                                        className="border bg-indigo-50 w-full h-full outline-none border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg p-3 text-justify text-gray-600 placeholder-gray-600 font-semibold"
                                        name="descricao"
                                        id="descricao"
-                                       placeholder="Insira a descrição da nova tarefa"
+                                       placeholder="Insira a descrição do novo projeto"
                                     ></textarea>
                                  </div>
                               </div>
@@ -263,16 +180,16 @@ export default function TasksModal({
                                     type="button"
                                     onClick={
                                        modalContent
-                                          ? atualizaTarefa
-                                          : criaTarefa
+                                          ? updateProject
+                                          : createProject
                                     }
-                                    className="inline-flex justify-center border-indigo-200 rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                    className="inline-flex border-indigo-200 justify-center rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                  >
                                     Salvar
                                  </button>
                                  <button
                                     type="button"
-                                    className="inline-flex justify-center rounded-md border border-indigo-200 bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                    className="inline-flex justify-center border-indigo-200  rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                     onClick={cancelHandler}
                                  >
                                     Cancelar

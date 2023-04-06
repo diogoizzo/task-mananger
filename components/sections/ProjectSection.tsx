@@ -2,29 +2,22 @@ import { useEffect, useState } from 'react';
 import BtnAdd from '../atoms/BtnAdd';
 import PageTitle from '../atoms/PageTitle';
 import Paragrafo from '../atoms/Paragrafo';
-import TasksModal from '../modals/TasksModal';
 import Menu from '../parts/Menu';
-import TasksList from './TasksList';
-import { useTasksContext, useTasksDispatch } from '../../context/GlobalContext';
+import {
+   useProjectContext,
+   useProjectDispatch
+} from '../../context/GlobalContext';
 import axios from 'axios';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
-import { ITask } from '../../interfaces/ITask';
+import { ProjectActionsTypes } from '../../reducer/projectReducer';
+import ProjectModal from '../modals/ProjectModal';
+import IProject from '../../interfaces/IProject';
+import ProjectsLIst from './ProjectsLIst';
 
-interface TasksSectionsProps {
-   titulo: string;
-   subtitulo: string;
-   status: string;
-}
-
-export default function TasksSections({
-   titulo,
-   subtitulo,
-   status
-}: TasksSectionsProps) {
+export default function ProjectSection() {
    const [isOpen, setOpen] = useState(false);
-   const [modalContent, setModalContent] = useState<ITask | null>(null);
-   const tasks = useTasksContext();
-   const dispatch = useTasksDispatch();
+   const [modalContent, setModalContent] = useState<IProject | null>(null);
+   const projects = useProjectContext();
+   const dispatch = useProjectDispatch();
 
    function closeModal() {
       setModalContent(null);
@@ -37,12 +30,12 @@ export default function TasksSections({
 
    useEffect(() => {
       const controller = new AbortController();
-      if (!tasks.length) {
+      if (!projects.length) {
          axios
-            .get('/api/tasks', { signal: controller.signal })
+            .get('/api/projects', { signal: controller.signal })
             .then((res) => {
                dispatch({
-                  type: TasksActionsTypes.addTask,
+                  type: ProjectActionsTypes.addProject,
                   payload: res.data
                });
             })
@@ -53,10 +46,10 @@ export default function TasksSections({
             controller.abort();
          };
       }
-   }, [dispatch, tasks]);
+   }, [dispatch, projects]);
    return (
       <Menu>
-         <TasksModal
+         <ProjectModal
             isOpen={isOpen}
             closeModal={closeModal}
             modalContent={modalContent}
@@ -65,8 +58,10 @@ export default function TasksSections({
          <section className="bg-white p-8 text-indigo-900 sticky top-0 z-30 shadow-md ">
             <div className="flex flex-wrap items-center -m-2">
                <div className="w-full md:w-1/2 p-2">
-                  <PageTitle title={titulo} />
-                  <Paragrafo>{subtitulo}</Paragrafo>
+                  <PageTitle title={'Projetos'} />
+                  <Paragrafo>
+                     Veja aqui a lista de todos os seus projetos
+                  </Paragrafo>
                </div>
                <div className="w-full md:w-1/2 p-2">
                   <div className="flex flex-wrap justify-end -m-2">
@@ -77,14 +72,12 @@ export default function TasksSections({
                </div>
             </div>
          </section>
-         <section>
-            <TasksList
-               tasks={tasks}
-               openModal={openModal}
-               setModalContent={setModalContent}
-               status={status}
-            />
-         </section>
+
+         <ProjectsLIst
+            projects={projects}
+            openModal={openModal}
+            setModalContent={setModalContent}
+         />
       </Menu>
    );
 }

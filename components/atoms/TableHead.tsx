@@ -7,7 +7,7 @@ export default function TableHead({ heads }: TableHeadProps) {
       <thead>
          <tr className="bg-indigo-200 text-indigo-900 uppercase text-sm leading-normal">
             {heads.map((head, idx, arr) => {
-               if (idx === arr.length - 1) {
+               if (idx === arr?.length - 1) {
                   return (
                      <th className="py-3 px-6 text-right" key={head}>
                         {head}

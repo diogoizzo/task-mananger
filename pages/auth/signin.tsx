@@ -80,10 +80,11 @@ export default function SignIn() {
                   </button>
                   <p className="text-center font-extrabold">
                      Ainda não possui uma conta?{' '}
-                     <Link href={'/auth/signup'}>
-                        <a className="text-indigo-500 hover:underline">
-                           Cadastre-se
-                        </a>
+                     <Link
+                        href={'/auth/signup'}
+                        className="text-indigo-500 hover:underline"
+                     >
+                        Cadastre-se
                      </Link>
                   </p>
                </form>

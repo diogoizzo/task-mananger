@@ -1,12 +1,9 @@
 import type { NextPage } from 'next';
 import Menu from '../components/parts/Menu';
+import ProjectSection from '../components/sections/ProjectSection';
 
 export default function Projetos<NextPage>() {
-   return (
-      <Menu>
-         <h1>Projetos!</h1>
-      </Menu>
-   );
+   return <ProjectSection />;
 }
 
 Projetos.auth = true;

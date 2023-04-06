@@ -1,11 +1,7 @@
-import Link from 'next/link';
-import { useRouter } from 'next/router';
 import MenuItem from '../atoms/MenuItem';
 import MenuTitle from '../atoms/MenuTitle';
-import { Component } from 'react';
 
 export default function Menu({ children }: any) {
-   const router = useRouter();
    return (
       <div className="h-[100%]">
          <div className="block navbar-menu relative z-50">

@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 import { useProjectDispatch } from '../../context/GlobalContext';
 import { ProjectActionsTypes } from '../../reducer/projectReducer';
+import Link from 'next/link';
 
 interface ProjectCardProps {
    project: IProject;
@@ -77,6 +78,27 @@ function ProjectCard({
                         d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
                      />
                   </svg>
+               </div>
+               <div className="w-5 mr-1 transform text-indigo-900 hover:text-indigo-500 hover:scale-125 transition-transform">
+                  <Link href={`/projetos/${project.id}`}>
+                     <svg
+                        width="100%"
+                        height="100%"
+                        viewBox="0 0 21 13"
+                        version="1.1"
+                        stroke="currentColor"
+                        fill="currentColor"
+                     >
+                        <g transform="matrix(0.916745,0,0,0.826537,0.137791,-8.77339)">
+                           <g>
+                              <g transform="matrix(0.34397,0,0,0.381511,-0.167456,6.14863)">
+                                 <path d="M63,30.1C52.9,18.2 42.2,12 32,12C21.8,12 11.1,18.2 1,30.1C0,31.2 0,32.9 1,34C11.1,45.8 21.8,52 32,52C42.2,52 52.9,45.8 63,33.9C63.9,32.8 63.9,31.2 63,30.1ZM32,48C23.3,48 13.6,42.3 4.6,32C13.6,21.7 23.3,16 32,16C40.7,16 50.4,21.7 59.4,32C50.4,42.3 40.7,48 32,48Z" />
+                                 <path d="M32,20C25.4,20 20,25.4 20,32C20,38.6 25.4,44 32,44C38.6,44 44,38.6 44,32C44,25.4 38.6,20 32,20ZM32,40C27.6,40 24,36.4 24,32C24,27.6 27.6,24 32,24C36.4,24 40,27.6 40,32C40,36.4 36.4,40 32,40Z" />
+                              </g>
+                           </g>
+                        </g>
+                     </svg>
+                  </Link>
                </div>
                <div
                   onClick={deleteProject}

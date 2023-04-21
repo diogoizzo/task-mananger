@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import Menu from '../components/parts/Menu';
 import TasksSections from '../components/sections/TaskSections';
+import useTaskFetch from '../hooks/useTaskFetch';
 
 export default function Proximas<NextPage>() {
    return (

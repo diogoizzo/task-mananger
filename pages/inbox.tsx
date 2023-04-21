@@ -20,7 +20,7 @@ export default function Inbox<NextPage>() {
 
    useEffect(() => {
       const controller = new AbortController();
-      if (!inboxTasks?.length) {
+      if (!inboxTasks.length) {
          axios
             .get('/api/inbox', { signal: controller.signal })
             .then((res) => {
@@ -67,7 +67,7 @@ export default function Inbox<NextPage>() {
                <div className="w-full md:w-1/2 p-2">
                   <div className="flex flex-wrap justify-end -m-2">
                      <div className="w-full md:w-auto p-2">
-                        <BtnTarefaInbox onClick={openModal} />
+                        <BtnTarefaInbox onClick={openModal} text="Adicionar" />
                      </div>
                   </div>
                </div>

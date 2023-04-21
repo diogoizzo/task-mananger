@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import IProject from '../../interfaces/IProject';
 import dayjs from 'dayjs';
-import ProjectCard from '../parts/ProjectCard';
+import ProjectCard from './ProjectCard';
 
 interface ProjectsWithLeftTime extends IProject {
    leftTime?: number;
@@ -31,11 +31,15 @@ function ProjectsLIst({
    );
 
    const projectsNotInitialized = orderedProjects.filter(
-      (project) => Number(new Date(project.startDate)) > Date.now()
+      (project) =>
+         Number(new Date(project.startDate)) > Date.now() &&
+         project.dueAt === null
    );
 
    const projectsActive = orderedProjects.filter(
-      (project) => Number(new Date(project.startDate)) <= Date.now()
+      (project) =>
+         Number(new Date(project.startDate)) <= Date.now() &&
+         project.dueAt === null
    );
 
    const projectsCompleted = orderedProjects.filter(

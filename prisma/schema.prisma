@@ -20,18 +20,17 @@ enum StatusTarefa {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String    @id @default(cuid())
   password      String
   name          String?
-  email         String?      @unique
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  email         String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   emailVerified DateTime?
   image         String?
   imboxes       Inbox[]
   projetos      Projeto[]
   tarefas       Tarefa[]
-  comentarios   Comentario[]
 }
 
 model Inbox {
@@ -58,32 +57,19 @@ model Projeto {
 }
 
 model Tarefa {
-  id           String       @id @default(cuid())
-  title        String
-  description  String?
-  status       StatusTarefa @default(planejada)
-  startDate    DateTime     @default(now())
-  dueDate      DateTime?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-  dueAt        DateTime?
-  user         User         @relation(fields: [userId], references: [id])
-  userId       String
-  projeto      Projeto?     @relation(fields: [projetoId], references: [id])
-  projetoId    String?
-  comentarios  Comentario[]
-  dependencias Tarefa[]     @relation("dependencias")
-  depTarefaId  String?
-  depTarefa    Tarefa?      @relation("dependencias", fields: [depTarefaId], references: [id])
-}
-
-model Comentario {
-  id        String   @id @default(cuid())
-  texto     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  tarefa    Tarefa   @relation(fields: [tarefaId], references: [id])
-  tarefaId  String
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
-}
+  id             String       @id @default(cuid())
+  title          String
+  description    String?
+  status         StatusTarefa @default(planejada)
+  startDate      DateTime     @default(now())
+  dueDate        DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  dueAt          DateTime?
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  projeto        Projeto?     @relation(fields: [projetoId], references: [id])
+  projetoId      String?
+  dependencies   Tarefa[]     @relation("dependencies")
+  isDependencyOf Tarefa[]     @relation("dependencies")
+} 

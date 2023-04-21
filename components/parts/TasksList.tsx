@@ -1,17 +1,24 @@
 import { Dispatch, SetStateAction } from 'react';
-import TaskDueCard from '../parts/TaskDueCard';
-import TaskCard from '../parts/TaskCard';
+import TaskDueCard from './TaskDueCard';
+import TaskCard from './TaskCard';
 import dayjs from 'dayjs';
 import { ITask } from '../../interfaces/ITask';
 
 interface TasksProps {
    openModal: () => void;
    setModalContent: Dispatch<SetStateAction<ITask | null>>;
-   tasks: ITask[];
+   tasks: ITask[] | [];
    status: String;
+   classNameProp?: string;
 }
 
-function TasksList({ tasks, setModalContent, openModal, status }: TasksProps) {
+function TasksList({
+   tasks,
+   setModalContent,
+   openModal,
+   status,
+   classNameProp
+}: TasksProps) {
    let filteredTasks;
 
    if (status === 'ativas') {
@@ -33,6 +40,7 @@ function TasksList({ tasks, setModalContent, openModal, status }: TasksProps) {
               (a: any, b: any) =>
                  Number(new Date(b.dueAt)) - Number(new Date(a.dueAt))
            );
+
    return (
       <section>
          <div className=" flex relative items-center justify-center  font-sans overflow-y-auto">
@@ -53,9 +61,13 @@ function TasksList({ tasks, setModalContent, openModal, status }: TasksProps) {
                      ))
                   )
                ) : (
-                  <div className="mt-40">
-                     <h3 className=" text-indigo-900 font-semibold text-lg text-center">
-                        Nenhuma tarefa encontrada para este filtro
+                  <div
+                     className={
+                        classNameProp ? classNameProp : 'mt-40 text-indigo-900'
+                     }
+                  >
+                     <h3 className=" font-semibold text-lg text-center">
+                        Nenhuma tarefa encontrada
                      </h3>
                   </div>
                )}

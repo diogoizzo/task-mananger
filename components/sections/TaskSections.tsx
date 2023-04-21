@@ -4,11 +4,12 @@ import PageTitle from '../atoms/PageTitle';
 import Paragrafo from '../atoms/Paragrafo';
 import TasksModal from '../modals/TasksModal';
 import Menu from '../parts/Menu';
-import TasksList from './TasksList';
+import TasksList from '../parts/TasksList';
 import { useTasksContext, useTasksDispatch } from '../../context/GlobalContext';
 import axios from 'axios';
 import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import { ITask } from '../../interfaces/ITask';
+import useTaskFetch from '../../hooks/useTaskFetch';
 
 interface TasksSectionsProps {
    titulo: string;
@@ -23,8 +24,7 @@ export default function TasksSections({
 }: TasksSectionsProps) {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<ITask | null>(null);
-   const tasks = useTasksContext();
-   const dispatch = useTasksDispatch();
+   const [tasks] = useTaskFetch();
 
    function closeModal() {
       setModalContent(null);
@@ -35,25 +35,6 @@ export default function TasksSections({
       setOpen(true);
    }
 
-   useEffect(() => {
-      const controller = new AbortController();
-      if (!tasks.length) {
-         axios
-            .get('/api/tasks', { signal: controller.signal })
-            .then((res) => {
-               dispatch({
-                  type: TasksActionsTypes.addTask,
-                  payload: res.data
-               });
-            })
-            .catch((error) => {
-               console.log(error);
-            });
-         return () => {
-            controller.abort();
-         };
-      }
-   }, [dispatch, tasks]);
    return (
       <Menu>
          <TasksModal
@@ -71,20 +52,18 @@ export default function TasksSections({
                <div className="w-full md:w-1/2 p-2">
                   <div className="flex flex-wrap justify-end -m-2">
                      <div className="w-full md:w-auto p-2">
-                        <BtnAdd onClick={openModal} />
+                        <BtnAdd onClick={openModal} text="Adicionar" />
                      </div>
                   </div>
                </div>
             </div>
          </section>
-         <section>
-            <TasksList
-               tasks={tasks}
-               openModal={openModal}
-               setModalContent={setModalContent}
-               status={status}
-            />
-         </section>
+         <TasksList
+            tasks={tasks}
+            openModal={openModal}
+            setModalContent={setModalContent}
+            status={status}
+         />
       </Menu>
    );
 }

@@ -12,6 +12,14 @@ export default async function handler(
          const projects = await prisma.projeto.findMany({
             where: {
                userId: String(token.id)
+            },
+            include: {
+               tarefas: {
+                  include: {
+                     dependencies: true,
+                     isDependencyOf: true
+                  }
+               }
             }
          });
          if (projects) {

@@ -11,13 +11,13 @@ import axios from 'axios';
 import { ProjectActionsTypes } from '../../reducer/projectReducer';
 import ProjectModal from '../modals/ProjectModal';
 import IProject from '../../interfaces/IProject';
-import ProjectsLIst from './ProjectsLIst';
+import ProjectsLIst from '../parts/ProjectsLIst';
+import useProjectFetch from '../../hooks/useProjectFetch';
 
 export default function ProjectSection() {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<IProject | null>(null);
-   const projects = useProjectContext();
-   const dispatch = useProjectDispatch();
+   const [projects] = useProjectFetch();
 
    function closeModal() {
       setModalContent(null);
@@ -28,25 +28,6 @@ export default function ProjectSection() {
       setOpen(true);
    }
 
-   useEffect(() => {
-      const controller = new AbortController();
-      if (!projects.length) {
-         axios
-            .get('/api/projects', { signal: controller.signal })
-            .then((res) => {
-               dispatch({
-                  type: ProjectActionsTypes.addProject,
-                  payload: res.data
-               });
-            })
-            .catch((error) => {
-               console.log(error);
-            });
-         return () => {
-            controller.abort();
-         };
-      }
-   }, [dispatch, projects]);
    return (
       <Menu>
          <ProjectModal
@@ -66,7 +47,7 @@ export default function ProjectSection() {
                <div className="w-full md:w-1/2 p-2">
                   <div className="flex flex-wrap justify-end -m-2">
                      <div className="w-full md:w-auto p-2">
-                        <BtnAdd onClick={openModal} />
+                        <BtnAdd onClick={openModal} text="Adicionar" />
                      </div>
                   </div>
                </div>

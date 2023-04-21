@@ -1,35 +1,54 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
-import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
+import {
+   Dispatch,
+   Fragment,
+   SetStateAction,
+   useEffect,
+   useRef,
+   useState
+} from 'react';
 import { Portal } from 'react-portal';
 import { useTasksDispatch } from '../../context/GlobalContext';
 import { ITask } from '../../interfaces/ITask';
 import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import Input from '../atoms/Input';
+import useProjectFetch from '../../hooks/useProjectFetch';
+import { ProjectActionsTypes } from '../../reducer/projectReducer';
+import IProject from '../../interfaces/IProject';
+import rightProjectAndTaskIdx from '../../utils/rightProjectAndTaskIdx';
+import { useRouter } from 'next/router';
 
 interface TasksModalProps {
    modalContent: ITask | null;
    setModalContent: Dispatch<SetStateAction<ITask | null>>;
    isOpen: boolean;
    closeModal: () => void;
+   activeProject?: IProject;
 }
 
 export default function TasksModal({
    isOpen,
    closeModal,
    modalContent,
-   setModalContent
+   setModalContent,
+   activeProject
 }: TasksModalProps) {
-   const [formData, setFormData] = useState({
+   const formInitialValue = {
       startDate: '',
       dueDate: '',
       title: '',
       description: '',
-      status: ''
-   });
+      status: '',
+      project: ''
+   };
 
-   // TODO corrigir e ajustar parte do projeto (select)
+   const [formData, setFormData] = useState(formInitialValue);
+   const [projects, projectDispatch] = useProjectFetch();
+   const projectBeforeAlterationId = useRef<string>();
+   const router = useRouter();
+
    useEffect(() => {
       if (modalContent) {
          setFormData({
@@ -37,21 +56,27 @@ export default function TasksModal({
             dueDate: dayjs(modalContent.dueDate).format('YYYY-MM-DD'),
             title: modalContent.title,
             description: modalContent.description,
-            status: modalContent.status
+            status: modalContent.status,
+            project: modalContent.projetoId ?? ' '
          });
+         projectBeforeAlterationId.current = modalContent.projetoId;
       }
-   }, [modalContent]);
+      if (activeProject) {
+         setFormData((prev) => ({ ...prev, project: activeProject.id }));
+      }
+   }, [modalContent, activeProject]);
 
    const dispatch = useTasksDispatch();
 
    function clearFormData() {
-      setFormData({
-         startDate: '',
-         dueDate: '',
-         title: '',
-         description: '',
-         status: ''
-      });
+      if (router.query.projectId) {
+         setFormData((prev) => ({
+            ...formInitialValue,
+            project: prev.project
+         }));
+      } else {
+         setFormData(formInitialValue);
+      }
    }
 
    function criaTarefa() {
@@ -60,16 +85,71 @@ export default function TasksModal({
             type: TasksActionsTypes.addTask,
             payload: [res.data]
          });
+         const selectedProject = projects.find(
+            (project) => project.id === res.data.projetoId
+         );
+         if (selectedProject) {
+            projectDispatch({
+               type: ProjectActionsTypes.updateProject,
+               payload: [
+                  {
+                     ...selectedProject,
+                     tarefas: [...selectedProject.tarefas, res.data]
+                  }
+               ]
+            });
+         }
       });
       clearFormData();
       closeModal();
    }
+   function removeFromProject(res: AxiosResponse) {
+      const projectBeforeAlteration = projects.find(
+         (project) => project.id === projectBeforeAlterationId.current
+      );
+      if (projectBeforeAlteration) {
+         const alteredProject = {
+            ...projectBeforeAlteration,
+            tarefas: [
+               ...projectBeforeAlteration.tarefas.filter(
+                  (tarefa) => tarefa.id !== res.data.id
+               )
+            ]
+         };
+         projectDispatch({
+            type: ProjectActionsTypes.updateProject,
+            payload: [alteredProject]
+         });
+      }
+   }
+
    function atualizaTarefa() {
       axios.put(`/api/tasks/${modalContent?.id}`, formData).then((res) => {
          dispatch({
             type: TasksActionsTypes.updateTask,
             payload: [res.data]
          });
+         const [selectedProject, taskIdx] = rightProjectAndTaskIdx(
+            projects,
+            res.data
+         );
+         selectedProject?.tarefas.splice(taskIdx, 1);
+         if (selectedProject) {
+            projectDispatch({
+               type: ProjectActionsTypes.updateProject,
+               payload: [
+                  {
+                     ...selectedProject,
+                     tarefas: [...selectedProject.tarefas, res.data]
+                  }
+               ]
+            });
+            if (selectedProject.id !== projectBeforeAlterationId.current) {
+               removeFromProject(res);
+            }
+         } else {
+            removeFromProject(res);
+         }
       });
       clearFormData();
       closeModal();
@@ -216,7 +296,15 @@ export default function TasksModal({
                                        </label>
 
                                        <select
-                                          id="status"
+                                          name="project"
+                                          id="project"
+                                          value={formData.project}
+                                          onChange={(e) =>
+                                             setFormData((prev) => ({
+                                                ...prev,
+                                                project: e.target.value
+                                             }))
+                                          }
                                           className="w-full outline-none bg-transparent text-gray-600 placeholder-gray-400 font-semibold"
                                        >
                                           <option value="">
@@ -224,18 +312,18 @@ export default function TasksModal({
                                              projeto?
                                           </option>
                                           {/* TODO fazer o sistema puxar todos os nomes de projetos e listar aqui para escolher */}
-                                          <option value="proximasAcoes">
+                                          <option value="Não pertence a nenhum projeto">
                                              Não pertence a nenhum projeto
                                           </option>
-                                          <option value="proximasAcoes">
-                                             Projeto 1
-                                          </option>
-                                          <option value="emProgresso">
-                                             Projeto 2
-                                          </option>
-                                          <option value="pausada">
-                                             Projeto 3
-                                          </option>
+
+                                          {projects.map((project) => (
+                                             <option
+                                                key={project.id}
+                                                value={project.id}
+                                             >
+                                                {project.title}
+                                             </option>
+                                          ))}
                                        </select>
                                     </div>
                                  </div>

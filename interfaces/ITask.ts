@@ -7,4 +7,7 @@ export interface ITask {
    status: string;
    leftTime?: number;
    dueAt?: Date;
+   projetoId: string;
+   dependencies: ITask[];
+   isDependencyOf?: ITask[];
 }

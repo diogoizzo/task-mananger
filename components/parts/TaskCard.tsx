@@ -1,28 +1,50 @@
 import axios from 'axios';
 import dayjs from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
-import { useTasksDispatch } from '../../context/GlobalContext';
+import {
+   useProjectContext,
+   useProjectDispatch,
+   useTasksDispatch
+} from '../../context/GlobalContext';
 import { ITask } from '../../interfaces/ITask';
 import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import mapStatus from '../../utils/mapStatus';
+import { ProjectActionsTypes } from '../../reducer/projectReducer';
+import IProject from '../../interfaces/IProject';
+import rightProjectAndTaskIdx from '../../utils/rightProjectAndTaskIdx';
 
-interface Task {
+interface TaskCardProps {
    task: ITask;
    openModal: () => void;
    setModalContent: Dispatch<SetStateAction<ITask | null>>;
 }
 
-function TaskCard({ task, setModalContent, openModal }: Task) {
+function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
+   const projects = useProjectContext();
    const dispatch = useTasksDispatch();
+   const projectDispatch = useProjectDispatch();
 
    function deleteTask() {
       axios.delete(`/api/tasks/${task.id}`).then((res) => {
          dispatch({ type: TasksActionsTypes.removeTask, payload: [res.data] });
+         const [rigthProject, taskIdx] = rightProjectAndTaskIdx(projects, task);
+         rigthProject.tarefas.splice(taskIdx, 1);
+         projectDispatch({
+            type: ProjectActionsTypes.updateProject,
+            payload: [rigthProject]
+         });
       });
    }
+
    function completeTask() {
       axios.patch(`/api/tasks/${task.id}`).then((res) => {
          dispatch({ type: TasksActionsTypes.updateTask, payload: [res.data] });
+         const [rigthProject, taskIdx] = rightProjectAndTaskIdx(projects, task);
+         rigthProject.tarefas[taskIdx] = res.data;
+         projectDispatch({
+            type: ProjectActionsTypes.updateProject,
+            payload: [rigthProject]
+         });
       });
    }
    return (

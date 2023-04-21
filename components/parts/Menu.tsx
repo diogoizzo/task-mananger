@@ -1,3 +1,4 @@
+import { signOut } from 'next-auth/react';
 import MenuItem from '../atoms/MenuItem';
 import MenuTitle from '../atoms/MenuTitle';
 
@@ -162,9 +163,9 @@ export default function Menu({ children }: any) {
                            }
                         />
                         <li>
-                           <a
-                              className="flex items-center pl-3 py-3 pr-2 text-gray-50 hover:bg-gray-900 rounded"
-                              href="#"
+                           <button
+                              className="flex items-center pl-3 py-3 pr-2 w-full text-gray-50 hover:bg-gray-900 rounded"
+                              onClick={() => signOut()}
                            >
                               <span className="inline-block mr-4">
                                  <svg
@@ -180,7 +181,7 @@ export default function Menu({ children }: any) {
                                  </svg>
                               </span>
                               <span>Sair</span>
-                           </a>
+                           </button>
                         </li>
                      </ul>
                      {/* TODO alterar link abaixo para botão de fazer logout */}

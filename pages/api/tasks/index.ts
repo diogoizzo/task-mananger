@@ -12,6 +12,10 @@ export default async function handler(
          const tarefas = await prisma.tarefa.findMany({
             where: {
                userId: String(token.id)
+            },
+            include: {
+               dependencies: true,
+               isDependencyOf: true
             }
          });
          if (tarefas) {
@@ -25,7 +29,12 @@ export default async function handler(
    } else if (req.method === 'POST') {
       const token = await getToken({ req });
       if (token) {
-         const { title, description, status, startDate, dueDate } = req.body;
+         const { title, description, status, startDate, dueDate, project } =
+            req.body;
+         const hasProject =
+            project === 'Não pertence a nenhum projeto'
+               ? null
+               : String(project);
          const tarefa = await prisma.tarefa.create({
             data: {
                title: title,
@@ -33,7 +42,8 @@ export default async function handler(
                status: status,
                startDate: new Date(startDate),
                dueDate: new Date(dueDate),
-               userId: String(token.id)
+               userId: String(token.id),
+               projetoId: hasProject
             }
          });
          res.status(201).json(tarefa);

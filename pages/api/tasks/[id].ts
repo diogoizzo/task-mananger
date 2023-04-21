@@ -26,16 +26,42 @@ export default async function handler(
       }
    } else if (req.method === 'PUT') {
       if (token) {
-         const updatedTask = await prisma.tarefa.update({
-            where: {
-               id: String(id)
-            },
-            data: {
-               ...req.body,
-               startDate: new Date(req.body.startDate),
-               dueDate: new Date(req.body.dueDate)
-            }
-         });
+         let updatedTask;
+         if (req.body.hasOwnProperty('newDependencies')) {
+            const { newDependencies } = req.body;
+            updatedTask = await prisma.tarefa.update({
+               where: {
+                  id: String(id)
+               },
+               data: {
+                  dependencies: {
+                     set: newDependencies
+                  }
+               },
+               include: {
+                  dependencies: true,
+                  isDependencyOf: true
+               }
+            });
+         } else {
+            const { project, ...form } = req.body;
+            const hasProject =
+               project === 'Não pertence a nenhum projeto'
+                  ? null
+                  : String(project);
+
+            updatedTask = await prisma.tarefa.update({
+               where: {
+                  id: String(id)
+               },
+               data: {
+                  ...form,
+                  projetoId: hasProject,
+                  startDate: new Date(req.body.startDate),
+                  dueDate: new Date(req.body.dueDate)
+               }
+            });
+         }
          if (updatedTask) {
             res.status(200).json(updatedTask);
          } else {

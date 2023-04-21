@@ -1,4 +1,5 @@
 import TasksSections from '../components/sections/TaskSections';
+import useTaskFetch from '../hooks/useTaskFetch';
 
 export default function Aguardando<NextPage>() {
    return (

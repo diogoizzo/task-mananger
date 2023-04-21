@@ -5,7 +5,7 @@ export default interface IProject {
    title: string;
    startDate: Date;
    dueDate?: Date;
-   dueAt?: Date;
+   dueAt?: Date | null;
    createdAt: Date;
    updatedAt: Date;
    tarefas: ITask[];

@@ -20,7 +20,7 @@ export default function InboxModal({
    content,
    id
 }: InboxModalProps) {
-   const [title, setTitle] = useState(content ?? '');
+   const [title, setTitle] = useState(content);
    const dispatch = useInboxDispatch();
 
    function criaInbox() {
@@ -51,10 +51,9 @@ export default function InboxModal({
                payload: [res.data]
             });
          });
-
       closeModal();
    }
-
+   // TODO corrigir erro da modal, que ao abrir para edição duas vezes, o texto some
    return (
       <Portal>
          <Transition show={isOpen} as={Fragment}>
@@ -62,7 +61,6 @@ export default function InboxModal({
                as="div"
                className="relative z-30 "
                onClose={() => {
-                  setTitle('');
                   closeModal();
                }}
             >
@@ -93,7 +91,7 @@ export default function InboxModal({
                               as="h3"
                               className="text-2xl font-bold text-center leading-6 text-indigo-900"
                            >
-                              NOVO INBOX
+                              {content ? 'Editar Inbox' : 'Novo Inbox'}
                            </Dialog.Title>
                            <div className="mt-5">
                               <p className="text-sm text-justify text-gray-600">
@@ -117,14 +115,14 @@ export default function InboxModal({
                            <div className="mt-4 w-full flex justify-center space-x-5">
                               <button
                                  type="button"
-                                 className="inline-flex justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                 className="inline-flex border-indigo-200  justify-center rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                  onClick={update ? updateInbox : criaInbox}
                               >
                                  Salvar
                               </button>
                               <button
                                  type="button"
-                                 className="inline-flex justify-center rounded-md border border-transparent bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                 className="inline-flex justify-center rounded-md border border-indigo-200 bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                  onClick={() => {
                                     setTitle('');
                                     closeModal();

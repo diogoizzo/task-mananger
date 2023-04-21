@@ -45,16 +45,16 @@ function ProjectId() {
 
    function toDo() {
       return (
-         activeProject?.tarefas.filter((task) => task.status !== 'concluida')
+         activeProject?.tarefas?.filter((task) => task.status !== 'concluida')
             .length || 0
       );
    }
 
    function percentDone(): number {
       const done =
-         activeProject?.tarefas.filter((task) => task.status === 'concluida')
+         activeProject?.tarefas?.filter((task) => task.status === 'concluida')
             .length || 0;
-      const total = activeProject?.tarefas.length || 0;
+      const total = activeProject?.tarefas?.length || 0;
       return Math.round((100 * done) / total);
    }
 

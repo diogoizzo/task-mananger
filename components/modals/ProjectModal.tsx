@@ -8,6 +8,7 @@ import { useProjectDispatch } from '../../context/GlobalContext';
 import Input from '../atoms/Input';
 import IProject from '../../interfaces/IProject';
 import { ProjectActionsTypes } from '../../reducer/projectReducer';
+import { useRouter } from 'next/router';
 
 interface ProjectModalProps {
    modalContent: IProject | null;
@@ -29,6 +30,7 @@ export default function ProjectModal({
       title: '',
       description: ''
    });
+   const router = useRouter();
 
    useEffect(() => {
       if (modalContent) {
@@ -56,9 +58,10 @@ export default function ProjectModal({
             type: ProjectActionsTypes.addProject,
             payload: [res.data]
          });
+         clearFormData();
+         closeModal();
+         router.push(`/projetos/${res.data.id}`);
       });
-      clearFormData();
-      closeModal();
    }
    function updateProject() {
       axios.put(`/api/projects/${modalContent?.id}`, formData).then((res) => {
@@ -66,9 +69,10 @@ export default function ProjectModal({
             type: ProjectActionsTypes.updateProject,
             payload: [res.data]
          });
+         clearFormData();
+         closeModal();
+         router.push(`/projetos/${res.data.id}`);
       });
-      clearFormData();
-      closeModal();
    }
 
    function cancelHandler() {

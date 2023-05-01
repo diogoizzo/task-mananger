@@ -3,21 +3,18 @@ import BtnAdd from '../atoms/BtnAdd';
 import PageTitle from '../atoms/PageTitle';
 import Paragrafo from '../atoms/Paragrafo';
 import Menu from '../parts/Menu';
-import {
-   useProjectContext,
-   useProjectDispatch
-} from '../../context/GlobalContext';
-import axios from 'axios';
-import { ProjectActionsTypes } from '../../reducer/projectReducer';
 import ProjectModal from '../modals/ProjectModal';
 import IProject from '../../interfaces/IProject';
 import ProjectsLIst from '../parts/ProjectsLIst';
 import useProjectFetch from '../../hooks/useProjectFetch';
+import { useRouter } from 'next/router';
 
 export default function ProjectSection() {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<IProject | null>(null);
    const [projects] = useProjectFetch();
+   const router = useRouter();
+   const { text } = router.query;
 
    function closeModal() {
       setModalContent(null);
@@ -27,6 +24,19 @@ export default function ProjectSection() {
    function openModal() {
       setOpen(true);
    }
+
+   useEffect(() => {
+      if (text) {
+         setModalContent({
+            title: '',
+            startDate: new Date(),
+            dueDate: null,
+            description: String(text),
+            tarefas: []
+         });
+         setOpen(true);
+      }
+   }, [text]);
 
    return (
       <Menu>

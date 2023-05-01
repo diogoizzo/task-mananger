@@ -10,6 +10,8 @@ import axios from 'axios';
 import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import { ITask } from '../../interfaces/ITask';
 import useTaskFetch from '../../hooks/useTaskFetch';
+import { useRouter } from 'next/router';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface TasksSectionsProps {
    titulo: string;
@@ -25,6 +27,8 @@ export default function TasksSections({
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<ITask | null>(null);
    const [tasks] = useTaskFetch();
+   const router = useRouter();
+   const { text } = router.query;
 
    function closeModal() {
       setModalContent(null);
@@ -34,6 +38,21 @@ export default function TasksSections({
    function openModal() {
       setOpen(true);
    }
+
+   useEffect(() => {
+      if (text) {
+         setModalContent({
+            id: '',
+            startDate: new Date(),
+            dueDate: new Date(dayjs().add(5, 'day').format()),
+            title: '',
+            description: String(text),
+            status: '',
+            dependencies: []
+         });
+         setOpen(true);
+      }
+   }, [text]);
 
    return (
       <Menu>

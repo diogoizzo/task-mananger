@@ -113,7 +113,7 @@ export default function ProjectModal({
                         leaveFrom="opacity-100 scale-100 mt-10"
                         leaveTo="opacity-0 scale-95 -mt-10"
                      >
-                        <Dialog.Panel className="max-w-4xl max-h-[100vh] transform overflow-y-auto border border-indigo-300 rounded-xl bg-indigo-50 p-6 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="max-w-4xl max-h-[100vh] transform overflow-y-auto border border-indigo-300 rounded-xl bg-indigo-50 p-8 text-left align-middle shadow-xl transition-all">
                            <Dialog.Title
                               as="h3"
                               className="text-2xl font-bold capitalize text-center leading-6 text-indigo-900"

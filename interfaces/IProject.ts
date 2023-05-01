@@ -1,13 +1,13 @@
 import { ITask } from './ITask';
 
 export default interface IProject {
-   id: string;
+   id?: string;
    title: string;
    startDate: Date;
-   dueDate?: Date;
+   dueDate?: Date | null;
    dueAt?: Date | null;
-   createdAt: Date;
-   updatedAt: Date;
+   createdAt?: Date;
+   updatedAt?: Date;
    tarefas: ITask[];
    description: string;
    leftTime?: number;

@@ -72,6 +72,7 @@ export default async function handler(
       }
    } else if (req.method === 'PATCH') {
       if (token) {
+         const { status } = req.body;
          const completedTask = await prisma.tarefa.update({
             where: {
                id: String(id)
@@ -81,8 +82,16 @@ export default async function handler(
                dueDate: undefined,
                title: undefined,
                description: undefined,
-               status: 'concluida',
+               status: status ? status : 'concluida',
                dueAt: new Date(Date.now())
+            },
+            include: {
+               dependencies: true,
+               isDependencyOf: {
+                  include: {
+                     dependencies: true
+                  }
+               }
             }
          });
          if (completedTask) {

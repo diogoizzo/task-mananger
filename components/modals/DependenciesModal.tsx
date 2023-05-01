@@ -14,7 +14,6 @@ import { ITask } from '../../interfaces/ITask';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import {
    useProjectDispatch,
-   useTasksContext,
    useTasksDispatch
 } from '../../context/GlobalContext';
 import { TasksActionsTypes } from '../../reducer/tasksReducer';
@@ -44,8 +43,15 @@ export default function TasksModal({
    const projectDispatch = useProjectDispatch();
 
    const allDependencyTask = modalContent?.tarefas.filter((task) => {
-      return task.id !== selectedTask?.id;
+      return task.id !== selectedTask?.id && task.status !== 'concluida';
    });
+
+   const allTasksTodo = modalContent?.tarefas.filter(
+      (task) => task.status !== 'concluida'
+   );
+
+   const allTasksLength = allTasksTodo?.length || 0;
+   const allDependencyTaskLength = allDependencyTask?.length || 0;
 
    useEffect(() => {
       if (selectedTask && selectedTask.dependencies.length > 0) {
@@ -149,7 +155,7 @@ export default function TasksModal({
                         leaveFrom="opacity-100 scale-100 mt-10"
                         leaveTo="opacity-0 scale-95 -mt-10"
                      >
-                        <Dialog.Panel className="relative w-[38rem]  transform overflow-y-visible border border-indigo-300 rounded-xl bg-indigo-50 px-6 py-10 text-left align-middle shadow-xl transition-all">
+                        <Dialog.Panel className="relative w-[38rem]  transform overflow-y-visible border border-indigo-300 rounded-xl bg-indigo-50 p-8 text-left align-middle shadow-xl transition-all">
                            <Dialog.Title
                               as="h3"
                               className="text-2xl font-bold capitalize text-center leading-6 text-indigo-900"
@@ -191,42 +197,49 @@ export default function TasksModal({
                                        leaveTo="opacity-0"
                                     >
                                        <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                          {modalContent?.tarefas.map(
-                                             (task, taskIdx) => (
-                                                <Listbox.Option
-                                                   key={taskIdx}
-                                                   className={({ active }) =>
-                                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                         active
-                                                            ? 'bg-indigo-100 text-indigo-900'
-                                                            : 'text-gray-900'
-                                                      }`
-                                                   }
-                                                   value={task}
-                                                >
-                                                   {({ selected }) => (
-                                                      <>
-                                                         <span
-                                                            className={`block truncate ${
-                                                               selected
-                                                                  ? 'font-medium'
-                                                                  : 'font-normal'
-                                                            }`}
-                                                         >
-                                                            {task.title}
-                                                         </span>
-                                                         {selected ? (
-                                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">
-                                                               <CheckIcon
-                                                                  className="h-5 w-5"
-                                                                  aria-hidden="true"
-                                                               />
+                                          {allTasksLength > 0 ? (
+                                             allTasksTodo?.map(
+                                                (task, taskIdx) => (
+                                                   <Listbox.Option
+                                                      key={taskIdx}
+                                                      className={({ active }) =>
+                                                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                                            active
+                                                               ? 'bg-indigo-100 text-indigo-900'
+                                                               : 'text-gray-900'
+                                                         }`
+                                                      }
+                                                      value={task}
+                                                   >
+                                                      {({ selected }) => (
+                                                         <>
+                                                            <span
+                                                               className={`block truncate ${
+                                                                  selected
+                                                                     ? 'font-medium'
+                                                                     : 'font-normal'
+                                                               }`}
+                                                            >
+                                                               {task.title}
                                                             </span>
-                                                         ) : null}
-                                                      </>
-                                                   )}
-                                                </Listbox.Option>
+                                                            {selected ? (
+                                                               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">
+                                                                  <CheckIcon
+                                                                     className="h-5 w-5"
+                                                                     aria-hidden="true"
+                                                                  />
+                                                               </span>
+                                                            ) : null}
+                                                         </>
+                                                      )}
+                                                   </Listbox.Option>
+                                                )
                                              )
+                                          ) : (
+                                             <span className="relative cursor-default select-none inline-block py-1 pl-3 pr-4">
+                                                Não existem tarefas pendentes
+                                                nesse projeto
+                                             </span>
                                           )}
                                        </Listbox.Options>
                                     </Transition>
@@ -290,42 +303,49 @@ export default function TasksModal({
                                        leaveTo="opacity-0"
                                     >
                                        <Listbox.Options className="absolute overflow-visible z-50 mt-1 max-h-60 w-full rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                          {allDependencyTask?.map(
-                                             (task, taskIdx) => (
-                                                <Listbox.Option
-                                                   key={taskIdx}
-                                                   className={({ active }) =>
-                                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                         active
-                                                            ? 'bg-indigo-100 text-indigo-900'
-                                                            : 'text-gray-900'
-                                                      }`
-                                                   }
-                                                   value={task}
-                                                >
-                                                   {({ selected }) => (
-                                                      <>
-                                                         <span
-                                                            className={`block truncate ${
-                                                               selected
-                                                                  ? 'font-medium'
-                                                                  : 'font-normal'
-                                                            }`}
-                                                         >
-                                                            {task.title}
-                                                         </span>
-                                                         {selected ? (
-                                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">
-                                                               <CheckIcon
-                                                                  className="h-5 w-5"
-                                                                  aria-hidden="true"
-                                                               />
+                                          {allDependencyTaskLength > 0 ? (
+                                             allDependencyTask?.map(
+                                                (task, taskIdx) => (
+                                                   <Listbox.Option
+                                                      key={taskIdx}
+                                                      className={({ active }) =>
+                                                         `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                                            active
+                                                               ? 'bg-indigo-100 text-indigo-900'
+                                                               : 'text-gray-900'
+                                                         }`
+                                                      }
+                                                      value={task}
+                                                   >
+                                                      {({ selected }) => (
+                                                         <>
+                                                            <span
+                                                               className={`block truncate ${
+                                                                  selected
+                                                                     ? 'font-medium'
+                                                                     : 'font-normal'
+                                                               }`}
+                                                            >
+                                                               {task.title}
                                                             </span>
-                                                         ) : null}
-                                                      </>
-                                                   )}
-                                                </Listbox.Option>
+                                                            {selected ? (
+                                                               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-indigo-600">
+                                                                  <CheckIcon
+                                                                     className="h-5 w-5"
+                                                                     aria-hidden="true"
+                                                                  />
+                                                               </span>
+                                                            ) : null}
+                                                         </>
+                                                      )}
+                                                   </Listbox.Option>
+                                                )
                                              )
+                                          ) : (
+                                             <span className="relative cursor-default select-none inline-block py-1 pl-3 pr-4">
+                                                Não existem tarefas pendentes
+                                                nesse projeto
+                                             </span>
                                           )}
                                        </Listbox.Options>
                                     </Transition>

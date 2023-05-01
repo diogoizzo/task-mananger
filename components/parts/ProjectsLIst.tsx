@@ -20,8 +20,7 @@ function ProjectsLIst({
 }: ProjectsLIstProps) {
    const ProjectsWithLeftTime: ProjectsWithLeftTime[] = projects.map(
       (item: ProjectsWithLeftTime) => {
-         let diffToNow = dayjs(item?.dueDate).diff(dayjs(), 'day');
-         item.leftTime = Number(diffToNow > 0 ? diffToNow : 0);
+         item.leftTime = dayjs(item?.dueDate).diff(dayjs(), 'day');
          return item;
       }
    );
@@ -42,9 +41,9 @@ function ProjectsLIst({
          project.dueAt === null
    );
 
-   const projectsCompleted = orderedProjects.filter(
-      (project) => project.dueAt !== null
-   );
+   const projectsCompleted = orderedProjects
+      .filter((project) => project.dueAt !== null)
+      .sort((a: any, b: any) => b.leftTime - a.leftTime);
 
    return (
       <section>

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useInboxDispatch } from '../../context/GlobalContext';
 import { InboxActionsTypes } from '../../reducer/inboxReducer';
 import InboxModal from '../modals/InboxModal';
+import ConfirmationModal from '../modals/ConfirmationModal';
 
 interface ITaskInbox {
    id: string;
@@ -16,6 +17,8 @@ interface TableRowsProps {
 export default function TableRow({ task }: TableRowsProps) {
    const dispatch = useInboxDispatch();
    const [isOpen, setIsOpen] = useState(false);
+   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+   const [confirmationContent, setConfirmationContent] = useState('');
 
    function deleteInbox() {
       axios.delete(`/api/inbox/${task.id}`).then((res) => {
@@ -29,6 +32,15 @@ export default function TableRow({ task }: TableRowsProps) {
    function openModal() {
       setIsOpen(true);
    }
+
+   function closeConfirmation() {
+      setIsConfirmationOpen(false);
+   }
+
+   function openConfirmation() {
+      setIsConfirmationOpen(true);
+   }
+
    return (
       <tr className="border-b border-gray-200 hover:bg-indigo-50">
          <InboxModal
@@ -37,6 +49,11 @@ export default function TableRow({ task }: TableRowsProps) {
             content={task.title}
             update
             id={task.id}
+         />
+         <ConfirmationModal
+            isOpen={isConfirmationOpen}
+            closeModal={closeConfirmation}
+            confirmationContent={confirmationContent}
          />
          <td className="py-3 px-6 text-justify whitespace-pre-wrap max-w-sm">
             <div className="flex items-center flex-wrap">{task.title}</div>
@@ -80,7 +97,13 @@ export default function TableRow({ task }: TableRowsProps) {
                      />
                   </svg>
                </div>
-               <div className="w-5  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform">
+               <div
+                  className="w-5  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform"
+                  onClick={() => {
+                     setConfirmationContent(task.title);
+                     setIsConfirmationOpen(true);
+                  }}
+               >
                   <svg
                      xmlns="http://www.w3.org/2000/svg"
                      viewBox="0 0 576 512"

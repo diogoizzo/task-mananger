@@ -1,8 +1,6 @@
-import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
 import type { NextPage } from 'next';
-import { Fragment, useEffect, useState } from 'react';
-import { Portal } from 'react-portal';
+import { useEffect, useState } from 'react';
+
 import BtnTarefaInbox from '../components/atoms/BtnAdd';
 import PageTitle from '../components/atoms/PageTitle';
 import Paragrafo from '../components/atoms/Paragrafo';
@@ -12,6 +10,7 @@ import InboxModal from '../components/modals/InboxModal';
 import Menu from '../components/parts/Menu';
 import { useInboxContext, useInboxDispatch } from '../context/GlobalContext';
 import { InboxActionsTypes } from '../reducer/inboxReducer';
+import axios from 'axios';
 
 export default function Inbox<NextPage>() {
    const [isOpen, setIsOpen] = useState(false);

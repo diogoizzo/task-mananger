@@ -5,9 +5,9 @@ import TasksSections from '../components/sections/TaskSections';
 export default function Progresso<NextPage>() {
    return (
       <TasksSections
-         titulo="Tarefas em Andamento"
-         subtitulo="Veja aqui todas as tarefas que estão em andamento"
-         status="emProgresso"
+         titulo="Tarefas atrasadas"
+         subtitulo="Veja aqui todas as tarefas que estão atrasadas."
+         status="atrasadas"
       />
    );
 }

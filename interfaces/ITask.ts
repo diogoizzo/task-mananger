@@ -1,5 +1,6 @@
 export interface ITask {
    id: string;
+   createdAt?: Date;
    startDate: Date;
    dueDate: Date;
    title: string;
@@ -7,7 +8,7 @@ export interface ITask {
    status: string;
    leftTime?: number;
    dueAt?: Date;
-   projetoId: string;
+   projetoId?: string;
    dependencies: ITask[];
    isDependencyOf?: ITask[];
 }

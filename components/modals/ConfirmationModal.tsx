@@ -1,58 +1,20 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
-import { Fragment, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Fragment } from 'react';
 import { Portal } from 'react-portal';
-import { useInboxDispatch } from '../../context/GlobalContext';
-import { InboxActionsTypes } from '../../reducer/inboxReducer';
 
-interface InboxModalProps {
+interface ConfirmationModalProps {
    isOpen: boolean;
    closeModal: () => void;
-   update?: boolean;
-   content?: string;
-   id?: string;
+   confirmationContent: string;
 }
 
-export default function InboxModal({
+function ConfirmationModal({
    isOpen,
    closeModal,
-   update,
-   content,
-   id
-}: InboxModalProps) {
-   const [title, setTitle] = useState(content);
-   const dispatch = useInboxDispatch();
-
-   function criaInbox() {
-      axios
-         .post('/api/inbox', {
-            title: title
-         })
-         .then((res) => {
-            dispatch({
-               type: InboxActionsTypes.addTask,
-               payload: [res.data]
-            });
-            setTitle('');
-            closeModal();
-         });
-   }
-
-   function updateInbox() {
-      axios
-         .put(`/api/inbox/${id}`, {
-            data: {
-               title: title
-            }
-         })
-         .then((res) => {
-            dispatch({
-               type: InboxActionsTypes.updateTask,
-               payload: [res.data]
-            });
-         });
-      closeModal();
-   }
+   confirmationContent
+}: ConfirmationModalProps) {
+   const router = useRouter();
    return (
       <Portal>
          <Transition show={isOpen} as={Fragment}>
@@ -90,44 +52,41 @@ export default function InboxModal({
                               as="h3"
                               className="text-2xl font-bold text-center leading-6 text-indigo-900"
                            >
-                              {content ? 'Editar Inbox' : 'Novo Inbox'}
+                              Essa tarefa pode ser realizada com uma única ação?
                            </Dialog.Title>
-                           <div className="mt-5">
-                              <p className="text-sm text-justify text-gray-600">
-                                 Digite um resumo do que precisa ser feito. Não
-                                 se preocupe com os detalhes, eles serão
-                                 elaborados quando a tarefa for processada
-                              </p>
-                              <div className="w-full text-center mt-8">
-                                 <textarea
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    className="border bg-indigo-50 border-indigo-600 rounded-lg p-3 text-justify"
-                                    name="tarefa"
-                                    id="tarefa"
-                                    cols={40}
-                                    rows={7}
-                                 ></textarea>
-                              </div>
+                           <div className="text-center py-10 text-indigo-800">
+                              {confirmationContent}
                            </div>
-
-                           <div className="mt-4 w-full flex justify-center space-x-5">
+                           <div className=" w-full flex justify-center space-x-5">
                               <button
                                  type="button"
                                  className="inline-flex border-indigo-200  justify-center rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                 onClick={update ? updateInbox : criaInbox}
+                                 onClick={() => {
+                                    router.push(
+                                       {
+                                          pathname: '/tarefas',
+                                          query: { text: confirmationContent }
+                                       },
+                                       '/tarefas'
+                                    );
+                                 }}
                               >
-                                 Salvar
+                                 Sim
                               </button>
                               <button
                                  type="button"
                                  className="inline-flex justify-center rounded-md border border-indigo-200 bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                                  onClick={() => {
-                                    setTitle('');
-                                    closeModal();
+                                    router.push(
+                                       {
+                                          pathname: '/projetos',
+                                          query: { text: confirmationContent }
+                                       },
+                                       '/projetos'
+                                    );
                                  }}
                               >
-                                 Cancelar
+                                 Não
                               </button>
                            </div>
                         </Dialog.Panel>
@@ -139,3 +98,4 @@ export default function InboxModal({
       </Portal>
    );
 }
+export default ConfirmationModal;

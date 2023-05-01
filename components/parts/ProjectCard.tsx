@@ -18,7 +18,7 @@ function ProjectCard({
    setModalContent
 }: ProjectCardProps) {
    const dispatch = useProjectDispatch();
-
+   const leftTime = project.leftTime || 0;
    function deleteProject() {
       axios.delete(`/api/projects/${project.id}`).then((res) => {
          dispatch({
@@ -36,15 +36,18 @@ function ProjectCard({
          });
       });
    }
-
    return (
-      <div className="bg-gray-50 min-h-[195px] flex relative shadow-md rounded-md mt-8 ">
+      <div
+         className={`bg-gray-50 ${
+            project.dueAt === null ? 'min-h-[195px]' : null
+         } flex relative shadow-md rounded-md mt-8 `}
+      >
          <div className="w-2/3 p-5 flex flex-col justify-between">
             <div>
                <h2 className="font-semibold text-xl text-indigo-900">
                   {project.title}
                </h2>
-               <p className="text-sm text-indigo-800 mt-2">
+               <p className="text-sm text-indigo-800 mt-2 text-justify">
                   {project.description}
                </p>
             </div>
@@ -52,7 +55,9 @@ function ProjectCard({
             <div className="flex item-center justify-start text-indigo-900 mt-5">
                <div
                   onClick={completeProject}
-                  className="w-5 mr-2  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform"
+                  className={`w-5 mr-3 ${
+                     project.dueAt === null ? null : 'hidden'
+                  }  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform cursor-pointer`}
                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                      <path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" />
@@ -63,7 +68,9 @@ function ProjectCard({
                      setModalContent(project);
                      openModal();
                   }}
-                  className="w-5 mr-2 transform hover:text-indigo-500 hover:scale-125 transition-transform"
+                  className={`w-5 mr-3 transform ${
+                     project.dueAt === null ? null : 'hidden'
+                  } hover:text-indigo-500 hover:scale-125 transition-transform cursor-pointer`}
                >
                   <svg
                      xmlns="http://www.w3.org/2000/svg"
@@ -79,7 +86,7 @@ function ProjectCard({
                      />
                   </svg>
                </div>
-               <div className="w-5 mr-1 transform text-indigo-900 hover:text-indigo-500 hover:scale-125 transition-transform">
+               <div className="w-5 mr-2 transform text-indigo-900 hover:text-indigo-500 hover:scale-125 transition-transform">
                   <Link href={`/projetos/${project.id}`}>
                      <svg
                         width="100%"
@@ -102,7 +109,7 @@ function ProjectCard({
                </div>
                <div
                   onClick={deleteProject}
-                  className="w-5 transform hover:text-indigo-500 hover:scale-125 transition-transform"
+                  className="w-5 transform cursor-pointer hover:text-indigo-500 hover:scale-125 transition-transform"
                >
                   <svg
                      xmlns="http://www.w3.org/2000/svg"
@@ -120,20 +127,55 @@ function ProjectCard({
                </div>
             </div>
          </div>
-         <div className="w-1/3 relative h-auto flex flex-col  items-center justify-center bg-indigo-100 rounded-tr-md rounded-br-md">
-            <div className=" bg-indigo-200 relative -top-5 h-32 w-32 flex flex-col justify-center items-center shadow-md shadow-indigo-900/20 rounded-full border-4 border-gray-100">
-               <div className="text-center relative -top-1">
-                  <p className="text-5xl font-bold leading-none text-indigo-900">
-                     {project.leftTime}
-                  </p>
-                  <p className="text-center text-indigo-700 text-xs leading-none">
-                     dias <br /> restantes
-                  </p>
+         <div
+            className={`w-1/3 relative flex flex-col  ${
+               project.dueAt === null
+                  ? 'items-center justify-center'
+                  : 'items-center'
+            } bg-indigo-100 rounded-tr-md rounded-br-md`}
+         >
+            {project.dueAt === null ? (
+               <>
+                  <div
+                     className={` ${
+                        leftTime >= 0 ? 'bg-indigo-200' : 'bg-red-200'
+                     } relative -top-5 h-32 w-32 flex flex-col justify-center items-center shadow-md shadow-indigo-900/20 rounded-full border-4 border-gray-100`}
+                  >
+                     <div className="text-center relative -top-1">
+                        <p
+                           className={`text-5xl font-bold leading-none ${
+                              leftTime >= 0 ? 'text-indigo-900' : 'text-red-600'
+                           }`}
+                        >
+                           {Math.abs(leftTime)}
+                        </p>
+                        <p
+                           className={`text-center ${
+                              leftTime >= 0 ? 'text-indigo-700' : 'text-red-500'
+                           } text-xs leading-none`}
+                        >
+                           {leftTime > 1 || leftTime < -1 ? 'dias' : 'dia'}{' '}
+                           <br />
+                           {leftTime >= 0 ? 'restantes' : 'de atraso'}
+                        </p>
+                     </div>
+                  </div>
+                  <div className="mt-3 absolute bottom-0 py-2 w-full justify-self-end text-center font-semibold text-indigo-100 rounded-br-md bg-indigo-900">
+                     {`Prazo final em ${dayjs(project.dueDate).format(
+                        'DD/MM/YYYY'
+                     )}`}
+                  </div>
+               </>
+            ) : (
+               <div className="h-full flex flex-col w-full">
+                  <div className="w-full text-center py-2 text-indigo-100 font-semibold bg-indigo-900">
+                     Projeto concluído em
+                  </div>
+                  <div className="flex h-full w-full justify-center items-center text-indigo-900 font-bold text-2xl ">
+                     {dayjs(project.dueAt).format('DD/MM/YYYY')}
+                  </div>
                </div>
-            </div>
-            <div className="mt-3 absolute bottom-0 py-2 w-full justify-self-end text-center font-semibold text-indigo-100 rounded-br-md bg-indigo-900">
-               {`Prazo final em ${dayjs(project.dueDate).format('DD/MM/YYYY')}`}
-            </div>
+            )}
          </div>
       </div>
    );

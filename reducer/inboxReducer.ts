@@ -1,3 +1,4 @@
+import Inbox from '../entities/Inbox';
 import { IInboxTask } from '../interfaces/IInboxTask';
 
 export enum InboxActionsTypes {
@@ -15,7 +16,16 @@ export default function inboxReducer(
    state: IInboxTask[],
    action: InboxActions
 ) {
-   const { type, payload } = action;
+   let { type, payload } = action;
+   if (payload.length > 1) {
+      payload = payload.map<Inbox>((inbox) => {
+         const { id, title, createdAt, updatedAt, userId } = inbox;
+         return new Inbox(id, title, createdAt, updatedAt, userId);
+      });
+   } else {
+      const { id, title, createdAt, updatedAt, userId } = payload[0];
+      payload = [new Inbox(id, title, createdAt, updatedAt, userId)];
+   }
    switch (type) {
       case InboxActionsTypes.addTask:
          return [...state, ...payload];

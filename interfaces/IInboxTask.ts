@@ -3,5 +3,5 @@ export interface IInboxTask {
    title: string;
    createdAt: Date;
    updatedAt: Date;
-   userId: String;
+   userId: string;
 }

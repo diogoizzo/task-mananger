@@ -1,6 +1,3 @@
-import type { NextPage } from 'next';
-import { useEffect, useState } from 'react';
-
 import BtnTarefaInbox from '../components/atoms/BtnAdd';
 import PageTitle from '../components/atoms/PageTitle';
 import Paragrafo from '../components/atoms/Paragrafo';
@@ -8,41 +5,12 @@ import TableBody from '../components/atoms/TableBody';
 import TableHead from '../components/atoms/TableHead';
 import InboxModal from '../components/modals/InboxModal';
 import Menu from '../components/parts/Menu';
-import { useInboxContext, useInboxDispatch } from '../context/GlobalContext';
-import { InboxActionsTypes } from '../reducer/inboxReducer';
-import axios from 'axios';
+import { useState } from 'react';
+import useInboxFetch from '../hooks/useInboxFetch';
 
 export default function Inbox<NextPage>() {
    const [isOpen, setIsOpen] = useState(false);
-   const inboxTasks = useInboxContext();
-   const dispatch = useInboxDispatch();
-
-   useEffect(() => {
-      const controller = new AbortController();
-      if (!inboxTasks.length) {
-         axios
-            .get('/api/inbox', { signal: controller.signal })
-            .then((res) => {
-               dispatch({
-                  type: InboxActionsTypes.addTask,
-                  payload: res.data
-               });
-            })
-            .catch((error) => {
-               console.log(error);
-            });
-         return () => {
-            controller.abort();
-         };
-      }
-   }, [dispatch, inboxTasks]);
-
-   const mapTasks = inboxTasks.map((task) => {
-      return {
-         id: task.id,
-         title: task.title
-      };
-   });
+   const inboxCache = useInboxFetch();
 
    function closeModal() {
       setIsOpen(false);
@@ -79,7 +47,7 @@ export default function Inbox<NextPage>() {
                   <div className="bg-white shadow-md my-6 ">
                      <table className="w-full table-auto  rounded-lg text-indigo-900">
                         <TableHead heads={['título', 'Ações']} />
-                        <TableBody tasks={mapTasks} />
+                        <TableBody tasks={inboxCache.mapedTasks} />
                      </table>
                   </div>
                </div>

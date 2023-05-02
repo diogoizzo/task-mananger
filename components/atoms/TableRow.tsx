@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { useState } from 'react';
-import { useInboxDispatch } from '../../context/GlobalContext';
-import { InboxActionsTypes } from '../../reducer/inboxReducer';
 import InboxModal from '../modals/InboxModal';
 import ConfirmationModal from '../modals/ConfirmationModal';
+import useInboxServices from '../../hooks/useInboxServices';
 
 interface ITaskInbox {
    id: string;
@@ -15,15 +13,13 @@ interface TableRowsProps {
 }
 
 export default function TableRow({ task }: TableRowsProps) {
-   const dispatch = useInboxDispatch();
+   const inboxServices = useInboxServices();
    const [isOpen, setIsOpen] = useState(false);
    const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
    const [confirmationContent, setConfirmationContent] = useState('');
 
    function deleteInbox() {
-      axios.delete(`/api/inbox/${task.id}`).then((res) => {
-         dispatch({ type: InboxActionsTypes.removeTask, payload: [res.data] });
-      });
+      inboxServices.deleteInbox(task.id);
    }
    function closeModal() {
       setIsOpen(false);
@@ -38,6 +34,7 @@ export default function TableRow({ task }: TableRowsProps) {
    }
 
    function openConfirmation() {
+      setConfirmationContent(task.title);
       setIsConfirmationOpen(true);
    }
 
@@ -99,10 +96,7 @@ export default function TableRow({ task }: TableRowsProps) {
                </div>
                <div
                   className="w-5  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform"
-                  onClick={() => {
-                     setConfirmationContent(task.title);
-                     setIsConfirmationOpen(true);
-                  }}
+                  onClick={openConfirmation}
                >
                   <svg
                      xmlns="http://www.w3.org/2000/svg"

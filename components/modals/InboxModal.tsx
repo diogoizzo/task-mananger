@@ -1,9 +1,8 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
 import { Fragment, useState } from 'react';
 import { Portal } from 'react-portal';
-import { useInboxDispatch } from '../../context/GlobalContext';
-import { InboxActionsTypes } from '../../reducer/inboxReducer';
+import InboxServices from '../../services/InboxServices';
+import useInboxServices from '../../hooks/useInboxServices';
 
 interface InboxModalProps {
    isOpen: boolean;
@@ -21,36 +20,16 @@ export default function InboxModal({
    id
 }: InboxModalProps) {
    const [title, setTitle] = useState(content);
-   const dispatch = useInboxDispatch();
+   const inboxServices = useInboxServices();
 
    function criaInbox() {
-      axios
-         .post('/api/inbox', {
-            title: title
-         })
-         .then((res) => {
-            dispatch({
-               type: InboxActionsTypes.addTask,
-               payload: [res.data]
-            });
-            setTitle('');
-            closeModal();
-         });
+      inboxServices.createInbox(title);
+      setTitle('');
+      closeModal();
    }
 
    function updateInbox() {
-      axios
-         .put(`/api/inbox/${id}`, {
-            data: {
-               title: title
-            }
-         })
-         .then((res) => {
-            dispatch({
-               type: InboxActionsTypes.updateTask,
-               payload: [res.data]
-            });
-         });
+      inboxServices.updateInbox(id, title);
       closeModal();
    }
    return (

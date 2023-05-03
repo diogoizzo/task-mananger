@@ -5,5 +5,5 @@ import InboxServices from '../services/InboxServices';
 export default function useInboxServices() {
    const inbox = useInboxContext();
    const dispatch = useInboxDispatch();
-   return new InboxServices(inbox, dispatch);
+   return new InboxServices(new InboxCache(inbox, dispatch));
 }

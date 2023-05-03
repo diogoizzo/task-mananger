@@ -6,8 +6,9 @@ import {
 import axios from 'axios';
 import { ProjectActionsTypes } from '../reducer/projectReducer';
 import IProject from '../interfaces/IProject';
+import ProjectsCache from '../cache/ProjectsCache';
 
-export default function useProjectFetch(): [IProject[], Function] {
+export default function useProjectFetch(): ProjectsCache {
    const projects: IProject[] = useProjectContext();
    const projectDispatch: Function = useProjectDispatch();
 
@@ -31,5 +32,5 @@ export default function useProjectFetch(): [IProject[], Function] {
       }
    }, [projectDispatch, projects]);
 
-   return [projects, projectDispatch];
+   return new ProjectsCache(projects, projectDispatch);
 }

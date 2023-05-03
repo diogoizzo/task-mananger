@@ -46,7 +46,7 @@ export default async function handler(
          } else {
             const { project, ...form } = req.body;
             const hasProject =
-               project === 'Não pertence a nenhum projeto'
+               project === 'Não pertence a nenhum projeto' || project === ' '
                   ? null
                   : String(project);
 

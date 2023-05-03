@@ -1,53 +1,25 @@
 import { Dispatch, SetStateAction } from 'react';
 import TaskDueCard from './TaskDueCard';
 import TaskCard from './TaskCard';
-import dayjs from 'dayjs';
 import { ITask } from '../../interfaces/ITask';
+import TasksCache from '../../cache/TasksCache';
 
 interface TasksProps {
    openModal: () => void;
    setModalContent: Dispatch<SetStateAction<ITask | null>>;
-   tasks: ITask[] | [];
+   tasksCache: TasksCache;
    status: string;
    classNameProp?: string;
 }
 
 function TasksList({
-   tasks,
+   tasksCache,
    setModalContent,
    openModal,
    status,
    classNameProp
 }: TasksProps) {
-   let filteredTasks;
-
-   if (status === 'ativas') {
-      filteredTasks = tasks.filter((task) => task.status !== 'concluida');
-   } else if (status === 'atrasadas') {
-      filteredTasks = tasks.filter(
-         (task) =>
-            dayjs(task?.dueDate).diff(dayjs(), 'day') < 0 &&
-            task.status !== 'concluida'
-      );
-   } else {
-      filteredTasks = tasks.filter((task) => task.status === status);
-   }
-
-   const tasksWithTime = filteredTasks.map((item: ITask) => {
-      item.leftTime = dayjs(item?.dueDate).diff(dayjs(), 'day');
-      return item;
-   });
-
-   const orderedTasks =
-      status === 'ativas' || status === 'proximasAcoes'
-         ? tasksWithTime.sort(
-              (a: any, b: any) => Number(a.leftTime) - Number(b.leftTime)
-           )
-         : filteredTasks.sort(
-              (a: any, b: any) =>
-                 Number(new Date(b.dueAt)) - Number(new Date(a.dueAt))
-           );
-
+   const orderedTasks = tasksCache.orderByStatus(status);
    return (
       <section>
          <div className=" flex relative items-center justify-center  font-sans overflow-y-auto">

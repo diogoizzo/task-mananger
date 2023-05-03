@@ -19,7 +19,7 @@ export default function TableRow({ task }: TableRowsProps) {
    const [confirmationContent, setConfirmationContent] = useState('');
 
    function deleteInbox() {
-      inboxServices.deleteInbox(task.id);
+      inboxServices.delete(task.id);
    }
    function closeModal() {
       setIsOpen(false);

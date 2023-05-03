@@ -1,5 +1,4 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios, { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
 import {
    Dispatch,
@@ -10,15 +9,12 @@ import {
    useState
 } from 'react';
 import { Portal } from 'react-portal';
-import { useTasksDispatch } from '../../context/GlobalContext';
 import { ITask } from '../../interfaces/ITask';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
-import Input from '../atoms/Input';
 import useProjectFetch from '../../hooks/useProjectFetch';
-import { ProjectActionsTypes } from '../../reducer/projectReducer';
 import IProject from '../../interfaces/IProject';
-import rightProjectAndTaskIdx from '../../utils/rightProjectAndTaskIdx';
 import { useRouter } from 'next/router';
+import useTaskServices from '../../hooks/useTaskServices';
+import TaskForm from '../parts/TaskForm';
 
 interface TasksModalProps {
    modalContent: ITask | null;
@@ -45,7 +41,7 @@ export default function TasksModal({
    };
 
    const [formData, setFormData] = useState(formInitialValue);
-   const [projects, projectDispatch] = useProjectFetch();
+   const taskServices = useTaskServices();
    const projectBeforeAlterationId = useRef<string>();
    const router = useRouter();
 
@@ -69,8 +65,6 @@ export default function TasksModal({
       }
    }, [modalContent, activeProject]);
 
-   const dispatch = useTasksDispatch();
-
    function clearFormData() {
       if (router.query.projectId) {
          setFormData((prev) => ({
@@ -82,81 +76,18 @@ export default function TasksModal({
       }
    }
 
-   function criaTarefa() {
-      axios.post('/api/tasks', formData).then((res) => {
-         dispatch({
-            type: TasksActionsTypes.addTask,
-            payload: [res.data]
-         });
-         const selectedProject = projects.find(
-            (project) => project.id === res.data.projetoId
-         );
-         if (selectedProject) {
-            projectDispatch({
-               type: ProjectActionsTypes.updateProject,
-               payload: [
-                  {
-                     ...selectedProject,
-                     tarefas:
-                        selectedProject?.tarefas?.length > 0
-                           ? [...selectedProject?.tarefas, res.data]
-                           : [res.data]
-                  }
-               ]
-            });
-         }
-      });
+   function createTask() {
+      taskServices.create(formData);
       clearFormData();
       closeModal();
    }
-   function removeFromProject(res: AxiosResponse) {
-      const projectBeforeAlteration = projects.find(
-         (project) => project.id === projectBeforeAlterationId.current
-      );
-      if (projectBeforeAlteration) {
-         const alteredProject = {
-            ...projectBeforeAlteration,
-            tarefas: [
-               ...projectBeforeAlteration.tarefas.filter(
-                  (tarefa) => tarefa.id !== res.data.id
-               )
-            ]
-         };
-         projectDispatch({
-            type: ProjectActionsTypes.updateProject,
-            payload: [alteredProject]
-         });
-      }
-   }
 
-   function atualizaTarefa() {
-      axios.put(`/api/tasks/${modalContent?.id}`, formData).then((res) => {
-         dispatch({
-            type: TasksActionsTypes.updateTask,
-            payload: [res.data]
-         });
-         const [selectedProject, taskIdx] = rightProjectAndTaskIdx(
-            projects,
-            res.data
-         );
-         selectedProject?.tarefas.splice(taskIdx, 1);
-         if (selectedProject) {
-            projectDispatch({
-               type: ProjectActionsTypes.updateProject,
-               payload: [
-                  {
-                     ...selectedProject,
-                     tarefas: [...selectedProject.tarefas, res.data]
-                  }
-               ]
-            });
-            if (selectedProject.id !== projectBeforeAlterationId.current) {
-               removeFromProject(res);
-            }
-         } else {
-            removeFromProject(res);
-         }
-      });
+   function updateTask() {
+      taskServices.update(
+         projectBeforeAlterationId.current || '',
+         modalContent?.id || '',
+         formData
+      );
       clearFormData();
       closeModal();
    }
@@ -207,172 +138,14 @@ export default function TasksModal({
                            >
                               Nova Tarefa
                            </Dialog.Title>
-                           <form className="mt-10">
-                              <Input
-                                 value={formData.title}
-                                 onChange={(e) =>
-                                    setFormData((prev) => ({
-                                       ...prev,
-                                       title: e.target.value
-                                    }))
-                                 }
-                                 titulo="Nome"
-                                 placeholder="Insira o nome da tarefa"
-                              />
-
-                              <div className="flex w-full justify-between flex-wrap ">
-                                 <div className="w-1/2 mt-3 pr-1">
-                                    <Input
-                                       value={formData.startDate}
-                                       onChange={(e) =>
-                                          setFormData((prev) => ({
-                                             ...prev,
-                                             startDate: e.target.value
-                                          }))
-                                       }
-                                       titulo="Data de início"
-                                       type="date"
-                                       placeholder="Data de início da tarefa"
-                                    />
-                                 </div>
-                                 <div className="w-1/2 mt-3 pl-1">
-                                    <Input
-                                       value={formData.dueDate}
-                                       onChange={(e) =>
-                                          setFormData((prev) => ({
-                                             ...prev,
-                                             dueDate: e.target.value
-                                          }))
-                                       }
-                                       titulo="Prazo final"
-                                       type="date"
-                                    />
-                                 </div>
-                                 <div className="w-full mt-3">
-                                    <div className="relative w-full mt-3 h-12 py-4 px-3 border border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg">
-                                       <label
-                                          htmlFor="status"
-                                          className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50"
-                                       >
-                                          Status
-                                       </label>
-
-                                       <select
-                                          value={formData.status}
-                                          onChange={(e) =>
-                                             setFormData((prev) => ({
-                                                ...prev,
-                                                status: e.target.value
-                                             }))
-                                          }
-                                          id="status"
-                                          className="w-full outline-none bg-transparent text-gray-600 placeholder-gray-400 font-semibold"
-                                       >
-                                          <option value="">
-                                             Escolha o status atual da tarefa
-                                          </option>
-                                          <option value="proximasAcoes">
-                                             Próximas ações
-                                          </option>
-                                          <option value="emProgresso">
-                                             Em progresso
-                                          </option>
-                                          <option value="pausada">
-                                             Pausada
-                                          </option>
-                                          <option value="aguardando">
-                                             Aguardando
-                                          </option>
-                                          <option value="planejada">
-                                             Planejada
-                                          </option>
-                                          <option value="concluida">
-                                             Concluída
-                                          </option>
-                                       </select>
-                                    </div>
-                                 </div>
-                                 <div className="w-full mt-3">
-                                    <div className="relative w-full mt-3 h-12 py-4 px-3 border border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg">
-                                       <label
-                                          htmlFor="status"
-                                          className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50"
-                                       >
-                                          Projeto
-                                       </label>
-
-                                       <select
-                                          name="project"
-                                          id="project"
-                                          value={formData.project}
-                                          onChange={(e) =>
-                                             setFormData((prev) => ({
-                                                ...prev,
-                                                project: e.target.value
-                                             }))
-                                          }
-                                          className="w-full outline-none bg-transparent text-gray-600 placeholder-gray-400 font-semibold"
-                                       >
-                                          <option value="">
-                                             Essa tarefa pertence a algum
-                                             projeto?
-                                          </option>
-                                          {/* TODO fazer o sistema puxar todos os nomes de projetos e listar aqui para escolher */}
-                                          <option value="Não pertence a nenhum projeto">
-                                             Não pertence a nenhum projeto
-                                          </option>
-
-                                          {projects.map((project) => (
-                                             <option
-                                                key={project.id}
-                                                value={project.id}
-                                             >
-                                                {project.title}
-                                             </option>
-                                          ))}
-                                       </select>
-                                    </div>
-                                 </div>
-                                 <div className="relative w-full text-center mt-6 h-28 ">
-                                    <span className="absolute bottom-full left-0 ml-3 -mb-1 transform translate-y-0.5 text-md font-semibold text-indigo-900 px-1 bg-indigo-50">
-                                       Descrição
-                                    </span>
-                                    <textarea
-                                       value={formData.description}
-                                       onChange={(e) =>
-                                          setFormData((prev) => ({
-                                             ...prev,
-                                             description: e.target.value
-                                          }))
-                                       }
-                                       className="border bg-indigo-50 w-full h-full outline-none border-indigo-600 hover:border-indigo-300 focus-within:border-black rounded-lg p-3 text-justify text-gray-600 placeholder-gray-600 font-semibold"
-                                       name="descricao"
-                                       id="descricao"
-                                       placeholder="Insira a descrição da nova tarefa"
-                                    ></textarea>
-                                 </div>
-                              </div>
-                              <div className=" w-full flex justify-center space-x-5 mt-10">
-                                 <button
-                                    type="button"
-                                    onClick={
-                                       modalContent
-                                          ? atualizaTarefa
-                                          : criaTarefa
-                                    }
-                                    className="inline-flex justify-center border-indigo-200 rounded-md border  bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                 >
-                                    Salvar
-                                 </button>
-                                 <button
-                                    type="button"
-                                    className="inline-flex justify-center rounded-md border border-indigo-200 bg-indigo-100 px-4 py-2 text-sm font-medium text-indigo-900 hover:bg-indigo-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                                    onClick={cancelHandler}
-                                 >
-                                    Cancelar
-                                 </button>
-                              </div>
-                           </form>
+                           <TaskForm
+                              formData={formData}
+                              setFormData={setFormData}
+                              modalContent={modalContent}
+                              createTask={createTask}
+                              updateTask={updateTask}
+                              cancelHandler={cancelHandler}
+                           />
                         </Dialog.Panel>
                      </Transition.Child>
                   </div>

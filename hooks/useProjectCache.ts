@@ -1,8 +1,12 @@
 import ProjectsCache from '../cache/ProjectsCache';
-import useProjectFetch from './useProjectFetch';
+import {
+   useProjectContext,
+   useProjectDispatch
+} from '../context/GlobalContext';
 
-export default function useTasksCache() {
-   const [projects, projectsDispatch] = useProjectFetch();
+export default function useProjectsCache() {
+   const projects = useProjectContext();
+   const projectsDispatch = useProjectDispatch();
 
    return new ProjectsCache(projects, projectsDispatch);
 }

@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useTasksContext, useTasksDispatch } from '../context/GlobalContext';
 import axios from 'axios';
 import { TasksActionsTypes } from '../reducer/tasksReducer';
-import { ITask } from '../interfaces/ITask';
+import TasksCache from '../cache/TasksCache';
 
-export default function useTaskFetch(): [ITask[], Function] {
+export default function useTaskFetch(): TasksCache {
    const tasks = useTasksContext();
    const dispatch = useTasksDispatch();
    useEffect(() => {
@@ -25,6 +25,7 @@ export default function useTaskFetch(): [ITask[], Function] {
             controller.abort();
          };
       }
-   }, [dispatch, tasks]);
-   return [tasks, dispatch];
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, []);
+   return new TasksCache(tasks, dispatch);
 }

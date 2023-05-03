@@ -12,7 +12,7 @@ import { useRouter } from 'next/router';
 export default function ProjectSection() {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<IProject | null>(null);
-   const [projects] = useProjectFetch();
+   const projectsCache = useProjectFetch();
    const router = useRouter();
    const { text } = router.query;
 
@@ -65,7 +65,7 @@ export default function ProjectSection() {
          </section>
 
          <ProjectsLIst
-            projects={projects}
+            projects={projectsCache.projects}
             openModal={openModal}
             setModalContent={setModalContent}
          />

@@ -5,13 +5,10 @@ import Paragrafo from '../atoms/Paragrafo';
 import TasksModal from '../modals/TasksModal';
 import Menu from '../parts/Menu';
 import TasksList from '../parts/TasksList';
-import { useTasksContext, useTasksDispatch } from '../../context/GlobalContext';
-import axios from 'axios';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import { ITask } from '../../interfaces/ITask';
 import useTaskFetch from '../../hooks/useTaskFetch';
 import { useRouter } from 'next/router';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 
 interface TasksSectionsProps {
    titulo: string;
@@ -26,7 +23,7 @@ export default function TasksSections({
 }: TasksSectionsProps) {
    const [isOpen, setOpen] = useState(false);
    const [modalContent, setModalContent] = useState<ITask | null>(null);
-   const [tasks] = useTaskFetch();
+   const tasksCache = useTaskFetch();
    const router = useRouter();
    const { text } = router.query;
 
@@ -78,7 +75,7 @@ export default function TasksSections({
             </div>
          </section>
          <TasksList
-            tasks={tasks}
+            tasksCache={tasksCache}
             openModal={openModal}
             setModalContent={setModalContent}
             status={status}

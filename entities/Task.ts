@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { ITask } from '../interfaces/ITask';
 
 export default class Task implements ITask {
@@ -10,9 +11,12 @@ export default class Task implements ITask {
       public status: string,
       public dependencies: ITask[],
       public createdAt?: Date,
-      public leftTime?: number,
       public dueAt?: Date,
       public projetoId?: string,
       public isDependencyOf?: ITask[]
    ) {}
+
+   get leftTime() {
+      return Number(dayjs(this.dueDate).diff(dayjs(), 'day'));
+   }
 }

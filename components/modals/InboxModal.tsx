@@ -23,13 +23,13 @@ export default function InboxModal({
    const inboxServices = useInboxServices();
 
    function criaInbox() {
-      inboxServices.createInbox(title);
+      inboxServices.create(title);
       setTitle('');
       closeModal();
    }
 
    function updateInbox() {
-      inboxServices.updateInbox(id, title);
+      inboxServices.update(id, title);
       closeModal();
    }
    return (

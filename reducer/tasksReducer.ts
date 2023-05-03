@@ -1,3 +1,4 @@
+import Task from '../entities/Task';
 import { ITask } from './../interfaces/ITask';
 
 export enum TasksActionsTypes {
@@ -16,7 +17,66 @@ export default function inboxReducer(
    state: ITask[],
    action: TasksActions
 ): ITask[] {
-   const { type, payload } = action;
+   let { type, payload } = action;
+   if (payload.length > 1) {
+      payload = payload.map<Task>((task) => {
+         const {
+            id,
+            startDate,
+            dueDate,
+            title,
+            description,
+            status,
+            dependencies,
+            createdAt,
+            dueAt,
+            projetoId,
+            isDependencyOf
+         } = task;
+         return new Task(
+            id,
+            startDate,
+            dueDate,
+            title,
+            description,
+            status,
+            dependencies,
+            createdAt,
+            dueAt,
+            projetoId,
+            isDependencyOf
+         );
+      });
+   } else {
+      const {
+         id,
+         startDate,
+         dueDate,
+         title,
+         description,
+         status,
+         dependencies,
+         createdAt,
+         dueAt,
+         projetoId,
+         isDependencyOf
+      } = payload[0];
+      payload = [
+         new Task(
+            id,
+            startDate,
+            dueDate,
+            title,
+            description,
+            status,
+            dependencies,
+            createdAt,
+            dueAt,
+            projetoId,
+            isDependencyOf
+         )
+      ];
+   }
    switch (type) {
       case TasksActionsTypes.addTask:
          return [...state, ...payload];

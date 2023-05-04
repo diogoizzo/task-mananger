@@ -19,63 +19,11 @@ export default function inboxReducer(
 ): ITask[] {
    let { type, payload } = action;
    if (payload.length > 1) {
-      payload = payload.map<Task>((task) => {
-         const {
-            id,
-            startDate,
-            dueDate,
-            title,
-            description,
-            status,
-            dependencies,
-            createdAt,
-            dueAt,
-            projetoId,
-            isDependencyOf
-         } = task;
-         return new Task(
-            id,
-            startDate,
-            dueDate,
-            title,
-            description,
-            status,
-            dependencies,
-            createdAt,
-            dueAt,
-            projetoId,
-            isDependencyOf
-         );
+      payload = payload.map<Task>((task: ITask) => {
+         return Task.createFromObject(task);
       });
-   } else {
-      const {
-         id,
-         startDate,
-         dueDate,
-         title,
-         description,
-         status,
-         dependencies,
-         createdAt,
-         dueAt,
-         projetoId,
-         isDependencyOf
-      } = payload[0];
-      payload = [
-         new Task(
-            id,
-            startDate,
-            dueDate,
-            title,
-            description,
-            status,
-            dependencies,
-            createdAt,
-            dueAt,
-            projetoId,
-            isDependencyOf
-         )
-      ];
+   } else if (payload.length === 1) {
+      payload = [Task.createFromObject(payload[0])];
    }
    switch (type) {
       case TasksActionsTypes.addTask:

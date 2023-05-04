@@ -19,4 +19,32 @@ export default class Task implements ITask {
    get leftTime() {
       return Number(dayjs(this.dueDate).diff(dayjs(), 'day'));
    }
+   static createFromObject(task: ITask) {
+      const {
+         id,
+         startDate,
+         dueDate,
+         title,
+         description,
+         status,
+         dependencies,
+         createdAt,
+         dueAt,
+         projetoId,
+         isDependencyOf
+      } = task;
+      return new Task(
+         id,
+         startDate,
+         dueDate,
+         title,
+         description,
+         status,
+         dependencies,
+         createdAt,
+         dueAt,
+         projetoId,
+         isDependencyOf
+      );
+   }
 }

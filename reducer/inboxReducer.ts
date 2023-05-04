@@ -22,7 +22,7 @@ export default function inboxReducer(
          const { id, title, createdAt, updatedAt, userId } = inbox;
          return new Inbox(id, title, createdAt, updatedAt, userId);
       });
-   } else {
+   } else if (payload.length === 1) {
       const { id, title, createdAt, updatedAt, userId } = payload[0];
       payload = [new Inbox(id, title, createdAt, updatedAt, userId)];
    }

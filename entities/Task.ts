@@ -19,6 +19,16 @@ export default class Task implements ITask {
    get leftTime() {
       return Number(dayjs(this.dueDate).diff(dayjs(), 'day'));
    }
+   get formatedDueAt() {
+      return dayjs(this.dueDate).format('DD/MM/YYYY');
+   }
+
+   get formatedCreatedAt() {
+      return dayjs(this.createdAt).format('DD/MM/YYYY');
+   }
+   get formatedStartDate() {
+      return dayjs(this.startDate).format('DD/MM/YYYY');
+   }
    static createFromObject(task: ITask) {
       const {
          id,

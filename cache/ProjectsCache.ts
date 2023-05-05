@@ -2,8 +2,9 @@ import { Dispatch } from 'react';
 import IProject from '../interfaces/IProject';
 import { ProjectActions, ProjectActionsTypes } from '../reducer/projectReducer';
 import { ITask } from '../interfaces/ITask';
+import IProjectsCache from '../interfaces/IProjectsCache';
 
-export default class ProjectsCache {
+export default class ProjectsCache implements IProjectsCache {
    constructor(
       public projects: IProject[],
       public projectDispatch: Dispatch<ProjectActions> | Function

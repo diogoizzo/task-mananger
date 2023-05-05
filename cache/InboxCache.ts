@@ -1,8 +1,9 @@
 import { InboxActions } from './../reducer/inboxReducer';
 import { IInboxTask } from '../interfaces/IInboxTask';
 import { InboxActionsTypes } from '../reducer/inboxReducer';
+import IInboxCache from '../interfaces/IInboxCache';
 
-export default class InboxCache {
+export default class InboxCache implements IInboxCache {
    constructor(
       public inbox: IInboxTask[],
       public inboxDispatch: React.Dispatch<InboxActions> | Function

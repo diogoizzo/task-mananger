@@ -1,12 +1,13 @@
 import axios from 'axios';
-import ProjectsCache from '../cache/ProjectsCache';
-import TasksCache from '../cache/TasksCache';
 import rightProjectAndTaskIdx from '../utils/rightProjectAndTaskIdx';
+import ITasksCache from '../interfaces/ITasksCache';
+import IProjectsCache from '../interfaces/IProjectsCache';
+import ITaskServices from '../interfaces/ITaskServices';
 
-export default class TaskServices {
+export default class TaskServices implements ITaskServices {
    constructor(
-      public tasksCache: TasksCache,
-      public projectsCache: ProjectsCache
+      public tasksCache: ITasksCache,
+      public projectsCache: IProjectsCache
    ) {}
 
    create(formData: object) {

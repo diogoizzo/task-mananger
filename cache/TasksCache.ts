@@ -2,8 +2,9 @@ import { Dispatch } from 'react';
 import { ITask } from '../interfaces/ITask';
 import { TasksActions, TasksActionsTypes } from '../reducer/tasksReducer';
 import dayjs from 'dayjs';
+import ITasksCache from '../interfaces/ITasksCache';
 
-export default class TasksCache {
+export default class TasksCache implements ITasksCache {
    constructor(
       public tasks: ITask[],
       public tasksDispatch: Dispatch<TasksActions> | Function

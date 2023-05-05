@@ -1,7 +1,8 @@
 import axios from 'axios';
 import InboxCache from '../cache/InboxCache';
+import IInboxServices from '../interfaces/IInboxServices';
 
-export default class InboxServices {
+export default class InboxServices implements IInboxServices {
    constructor(public inboxCache: InboxCache) {}
    create(title: string | undefined) {
       if (title) {

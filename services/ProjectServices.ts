@@ -1,5 +1,6 @@
-import ProjectsCache from '../cache/ProjectsCache';
+import IProjectService from '../interfaces/IProjectServices';
+import IProjectsCache from '../interfaces/IProjectsCache';
 
-export default class ProjectServices {
-   constructor(public projectsCache: ProjectsCache) {}
+export default class ProjectServices implements IProjectService {
+   constructor(public projectsCache: IProjectsCache) {}
 }

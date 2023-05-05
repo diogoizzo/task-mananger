@@ -16,4 +16,8 @@ export default interface IProjectsCache {
       task: ITask
    ) => void;
    update: (project: IProject) => void;
+   orderedByLeftTime: IProject[];
+   notInitializedProjects: IProject[];
+   activeProjects: IProject[];
+   completedProjects: IProject[];
 }

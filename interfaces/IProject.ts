@@ -8,7 +8,7 @@ export default interface IProject {
    dueAt?: Date | null;
    createdAt?: Date;
    updatedAt?: Date;
-   tarefas: ITask[];
+   tasks: ITask[];
    description: string;
    leftTime?: number;
 }

@@ -32,7 +32,7 @@ export default function ProjectSection() {
             startDate: new Date(),
             dueDate: null,
             description: String(text),
-            tarefas: []
+            tasks: []
          });
          setOpen(true);
       }
@@ -65,7 +65,7 @@ export default function ProjectSection() {
          </section>
 
          <ProjectsLIst
-            projects={projectsCache.projects}
+            projectsCache={projectsCache}
             openModal={openModal}
             setModalContent={setModalContent}
          />

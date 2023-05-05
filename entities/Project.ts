@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import IProject from '../interfaces/IProject';
 import { ITask } from '../interfaces/ITask';
 
@@ -6,12 +7,14 @@ export default class Project implements IProject {
       public title: string,
       public startDate: Date,
       public description: string,
-      public tarefas: ITask[],
+      public tasks: ITask[],
       public id?: string,
       public dueDate?: Date | null,
       public dueAt?: Date | null,
       public createdAt?: Date,
-      public updatedAt?: Date,
-      public leftTime?: number
+      public updatedAt?: Date
    ) {}
+   get leftTime() {
+      return dayjs(this.dueDate).diff(dayjs(), 'day');
+   }
 }

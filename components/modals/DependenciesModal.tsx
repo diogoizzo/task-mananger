@@ -42,11 +42,11 @@ export default function TasksModal({
    const sucessSave = useRef<HTMLDivElement | null>(null);
    const projectDispatch = useProjectDispatch();
 
-   const allDependencyTask = modalContent?.tarefas.filter((task) => {
+   const allDependencyTask = modalContent?.tasks.filter((task) => {
       return task.id !== selectedTask?.id && task.status !== 'concluida';
    });
 
-   const allTasksTodo = modalContent?.tarefas.filter(
+   const allTasksTodo = modalContent?.tasks.filter(
       (task) => task.status !== 'concluida'
    );
 
@@ -93,8 +93,8 @@ export default function TasksModal({
                });
                let newProjectWithDependencies = modalContent;
                if (newProjectWithDependencies) {
-                  newProjectWithDependencies.tarefas[
-                     newProjectWithDependencies.tarefas.findIndex(
+                  newProjectWithDependencies.tasks[
+                     newProjectWithDependencies.tasks.findIndex(
                         (task) => task.id === selectedTask.id
                      )
                   ] = res.data;

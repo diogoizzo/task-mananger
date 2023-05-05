@@ -8,7 +8,7 @@ export default function rightProjectAndTaskIdx(
    const projectIdx = projects.findIndex(
       (project) => project.id === task.projetoId
    );
-   const taskIdx = projects[projectIdx]?.tarefas.findIndex(
+   const taskIdx = projects[projectIdx]?.tasks.findIndex(
       (item) => item.id === task.id
    );
    return [projects[projectIdx], taskIdx];

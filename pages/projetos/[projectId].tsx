@@ -46,16 +46,18 @@ function ProjectId() {
 
    function toDo() {
       return (
-         activeProject?.tarefas?.filter((task) => task.status !== 'concluida')
-            .length || 0
+         activeProject?.tasks?.filter(
+            (task: ITask) => task.status !== 'concluida'
+         ).length || 0
       );
    }
 
    function percentDone(): number {
       const done =
-         activeProject?.tarefas?.filter((task) => task.status === 'concluida')
-            .length || 0;
-      const total = activeProject?.tarefas?.length || 0;
+         activeProject?.tasks?.filter(
+            (task: ITask) => task.status === 'concluida'
+         ).length || 0;
+      const total = activeProject?.tasks?.length || 0;
       return Math.round((100 * done) / total);
    }
 
@@ -177,7 +179,7 @@ function ProjectId() {
                Ativas
             </h2>
             <TasksList
-               tasks={activeProject?.tarefas || []}
+               tasks={activeProject?.tasks || []}
                openModal={openModal}
                setModalContent={setModalContent}
                status={'ativas'}
@@ -187,7 +189,7 @@ function ProjectId() {
                Concluídas
             </h2>
             <TasksList
-               tasks={activeProject?.tarefas || []}
+               tasks={activeProject?.tasks || []}
                openModal={openModal}
                setModalContent={setModalContent}
                status={'concluida'}

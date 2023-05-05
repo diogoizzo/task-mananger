@@ -41,7 +41,7 @@ export default class TaskServices implements ITaskServices {
             this.projectsCache.projects,
             res.data
          );
-         rigthProject.tarefas.splice(taskIdx, 1);
+         rigthProject.tasks.splice(taskIdx, 1);
          this.projectsCache.update(rigthProject);
       });
    }
@@ -58,7 +58,7 @@ export default class TaskServices implements ITaskServices {
                res.data
             );
             if (rigthProject) {
-               rigthProject.tarefas[taskIdx] = res.data;
+               rigthProject.tasks[taskIdx] = res.data;
                this.projectsCache.update(rigthProject);
             }
          });
@@ -86,7 +86,7 @@ export default class TaskServices implements ITaskServices {
             res.data
          );
          if (rigthProject) {
-            rigthProject.tarefas[taskIdx] = res.data;
+            rigthProject.tasks[taskIdx] = res.data;
             this.projectsCache.update(rigthProject);
          }
          this.findFreeTask(res.data);

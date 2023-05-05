@@ -3,10 +3,11 @@ import TaskDueCard from './TaskDueCard';
 import TaskCard from './TaskCard';
 import { ITask } from '../../interfaces/ITask';
 import TasksCache from '../../cache/TasksCache';
+import ITaskFrom from '../../interfaces/ITaskForm';
 
 interface TasksProps {
    openModal: () => void;
-   setModalContent: Dispatch<SetStateAction<ITask | null>>;
+   setModalContent: Dispatch<SetStateAction<ITaskFrom | null>>;
    tasksCache: TasksCache;
    status: string;
    classNameProp?: string;

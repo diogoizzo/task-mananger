@@ -72,4 +72,10 @@ export default class ProjectsCache implements IProjectsCache {
          this.removeFromProject(task, projectBeforeAlterationId);
       }
    }
+   update(project: IProject) {
+      this.projectDispatch({
+         type: ProjectActionsTypes.updateProject,
+         payload: [project]
+      });
+   }
 }

@@ -58,4 +58,10 @@ export default class TasksCache implements ITasksCache {
          payload: [task]
       });
    }
+   delete(task: ITask) {
+      this.tasksDispatch({
+         type: TasksActionsTypes.removeTask,
+         payload: [task]
+      });
+   }
 }

@@ -3,6 +3,8 @@ import { useSession, SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import Loading from '../components/sections/loading';
 import GlobalContext from '../context/GlobalContext';
+import useProjectFetch from '../hooks/useProjectFetch';
+import useTaskFetch from '../hooks/useTaskFetch';
 
 function Auth(props: any) {
    // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"

@@ -15,4 +15,5 @@ export default interface IProjectsCache {
       taskIdx: number,
       task: ITask
    ) => void;
+   update: (project: IProject) => void;
 }

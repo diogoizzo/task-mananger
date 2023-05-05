@@ -1,88 +1,21 @@
-import axios from 'axios';
-import dayjs from 'dayjs';
 import { Dispatch, SetStateAction } from 'react';
-import {
-   useProjectContext,
-   useProjectDispatch,
-   useTasksDispatch
-} from '../../context/GlobalContext';
 import { ITask } from '../../interfaces/ITask';
-import { TasksActionsTypes } from '../../reducer/tasksReducer';
 import mapStatus from '../../utils/mapStatus';
-import { ProjectActionsTypes } from '../../reducer/projectReducer';
-import rightProjectAndTaskIdx from '../../utils/rightProjectAndTaskIdx';
+import useProjectsCache from '../../hooks/useProjectCache';
+import useTaskServices from '../../hooks/useTaskServices';
+import ITaskFrom from '../../interfaces/ITaskForm';
 
 interface TaskCardProps {
    task: ITask;
    openModal: () => void;
-   setModalContent: Dispatch<SetStateAction<ITask | null>>;
+   setModalContent: Dispatch<SetStateAction<ITaskFrom | null>>;
 }
 
 function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
-   const projects = useProjectContext();
-   const dispatch = useTasksDispatch();
-   const projectDispatch = useProjectDispatch();
-   const rightProject = projects.find(
-      (project) => project.id === task.projetoId
-   );
+   const projectsCache = useProjectsCache();
+   const taskServices = useTaskServices();
+   const rightProject = projectsCache.selectByProjectID(task.projetoId || '');
    const leftTime = task.leftTime || 0;
-
-   function deleteTask() {
-      axios.delete(`/api/tasks/${task.id}`).then((res) => {
-         dispatch({ type: TasksActionsTypes.removeTask, payload: [res.data] });
-         const [rigthProject, taskIdx] = rightProjectAndTaskIdx(projects, task);
-         rigthProject.tarefas.splice(taskIdx, 1);
-         projectDispatch({
-            type: ProjectActionsTypes.updateProject,
-            payload: [rigthProject]
-         });
-      });
-   }
-
-   function completeTask() {
-      axios.patch(`/api/tasks/${task.id}`).then((res) => {
-         dispatch({ type: TasksActionsTypes.updateTask, payload: [res.data] });
-         const [rigthProject, taskIdx] = rightProjectAndTaskIdx(projects, task);
-         if (rigthProject) {
-            rigthProject.tarefas[taskIdx] = res.data;
-            projectDispatch({
-               type: ProjectActionsTypes.updateProject,
-               payload: [rigthProject]
-            });
-         }
-         res.data.isDependencyOf.forEach((dependentTask: ITask) => {
-            const countActiveDependencies = dependentTask?.dependencies.reduce(
-               (acc: number, taskDepedency: ITask) => {
-                  return taskDepedency.status !== 'concluida' ? acc + 1 : acc;
-               },
-               0
-            );
-            if (countActiveDependencies === 0) {
-               axios
-                  .patch(`/api/tasks/${dependentTask.id}`, {
-                     status: 'proximasAcoes'
-                  })
-                  .then((res) => {
-                     dispatch({
-                        type: TasksActionsTypes.updateTask,
-                        payload: [res.data]
-                     });
-                     const [rigthProject, taskIdx] = rightProjectAndTaskIdx(
-                        projects,
-                        res.data
-                     );
-                     if (rigthProject) {
-                        rigthProject.tarefas[taskIdx] = res.data;
-                        projectDispatch({
-                           type: ProjectActionsTypes.updateProject,
-                           payload: [rigthProject]
-                        });
-                     }
-                  });
-            }
-         });
-      });
-   }
    return (
       <div className="bg-gray-50 min-h-[195px] flex relative shadow-md rounded-md mt-8 ">
          <div className="w-2/3 p-5 flex flex-col justify-start">
@@ -105,7 +38,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
 
             <div className="flex absolute bottom-5 item-center justify-start text-indigo-900 mt-5">
                <div
-                  onClick={completeTask}
+                  onClick={() => taskServices.complete(task.id)}
                   className="w-5 mr-2  transform fill-indigo-900 hover:fill-indigo-500 hover:scale-125 transition-transform"
                >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -134,7 +67,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
                   </svg>
                </div>
                <div
-                  onClick={deleteTask}
+                  onClick={() => taskServices.delete(task.id)}
                   className="w-5 transform hover:text-indigo-500 hover:scale-125 transition-transform"
                >
                   <svg
@@ -180,7 +113,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
                )}
             </div>
             <div className="mt-3 absolute bottom-0 py-2 w-full justify-self-end text-center font-semibold text-indigo-100 rounded-br-md bg-indigo-900">
-               {`Prazo final em ${dayjs(task.dueDate).format('DD/MM/YYYY')}`}
+               {`Prazo final em ${task.formatedDueAt}`}
             </div>
          </div>
       </div>

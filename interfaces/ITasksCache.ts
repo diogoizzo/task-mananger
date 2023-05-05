@@ -11,4 +11,5 @@ export default interface ITasksCache {
    orderByStatus: (status: string) => ITask[];
    create: (task: ITask) => void;
    update: (task: ITask) => void;
+   delete: (task: ITask) => void;
 }

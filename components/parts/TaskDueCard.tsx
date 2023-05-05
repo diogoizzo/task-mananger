@@ -1,17 +1,13 @@
-import dayjs from 'dayjs';
-
 import { ITask } from '../../interfaces/ITask';
-import { useProjectContext } from '../../context/GlobalContext';
+import useProjectsCache from '../../hooks/useProjectCache';
 
 type TaskDueCardProps = {
    task: ITask;
 };
 
 function TaskDueCard({ task }: TaskDueCardProps) {
-   const projects = useProjectContext();
-   const rightProject = projects.find(
-      (project) => project.id === task.projetoId
-   );
+   const projectsCache = useProjectsCache();
+   const rightProject = projectsCache.selectByProjectID(task.projetoId || '');
 
    return (
       <div className="bg-gray-50 relative  overflow-hidden flex  w-full shadow-md rounded-md mt-8 ">
@@ -29,10 +25,8 @@ function TaskDueCard({ task }: TaskDueCardProps) {
                   {task.description}
                </p>
                <div className="flex mt-6 justify-between text-indigo-800 text-sm bg-indigo-50 px-40 py-5 ">
-                  <p>Criada em: {dayjs(task.createdAt).format('DD/MM/YYYY')}</p>
-                  <p>
-                     Iniciada em: {dayjs(task.startDate).format('DD/MM/YYYY')}
-                  </p>
+                  <p>Criada em: {task.formatedCreatedAt}</p>
+                  <p>Iniciada em: {task.formatedStartDate}</p>
                </div>
             </div>
          </div>
@@ -41,7 +35,7 @@ function TaskDueCard({ task }: TaskDueCardProps) {
                Tarefa concluída em:
             </div>
             <div className="flex h-full w-full justify-center items-center text-indigo-900 font-bold text-2xl ">
-               {dayjs(task.dueAt).format('DD/MM/YYYY')}
+               {task.formatedDueAt}
             </div>
          </div>
       </div>

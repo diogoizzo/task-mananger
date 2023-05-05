@@ -1,3 +1,5 @@
+import Task from '../entities/Task';
+
 export interface ITask {
    id: string;
    createdAt?: Date;
@@ -6,9 +8,12 @@ export interface ITask {
    title: string;
    description: string;
    status: string;
-   leftTime?: number;
+   leftTime: number;
    dueAt?: Date;
    projetoId?: string;
    dependencies: ITask[];
    isDependencyOf?: ITask[];
+   formatedDueAt: string;
+   formatedCreatedAt: string;
+   formatedStartDate: string;
 }

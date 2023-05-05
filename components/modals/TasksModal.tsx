@@ -15,10 +15,11 @@ import IProject from '../../interfaces/IProject';
 import { useRouter } from 'next/router';
 import useTaskServices from '../../hooks/useTaskServices';
 import TaskForm from '../parts/TaskForm';
+import ITaskFrom from '../../interfaces/ITaskForm';
 
 interface TasksModalProps {
-   modalContent: ITask | null;
-   setModalContent: Dispatch<SetStateAction<ITask | null>>;
+   modalContent: ITaskFrom | null;
+   setModalContent: Dispatch<SetStateAction<ITaskFrom | null>>;
    isOpen: boolean;
    closeModal: () => void;
    activeProject?: IProject;

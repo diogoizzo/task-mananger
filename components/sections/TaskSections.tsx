@@ -5,10 +5,11 @@ import Paragrafo from '../atoms/Paragrafo';
 import TasksModal from '../modals/TasksModal';
 import Menu from '../parts/Menu';
 import TasksList from '../parts/TasksList';
-import { ITask } from '../../interfaces/ITask';
 import useTaskFetch from '../../hooks/useTaskFetch';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
+import useProjectFetch from '../../hooks/useProjectFetch';
+import ITaskFrom from '../../interfaces/ITaskForm';
 
 interface TasksSectionsProps {
    titulo: string;
@@ -22,10 +23,11 @@ export default function TasksSections({
    status
 }: TasksSectionsProps) {
    const [isOpen, setOpen] = useState(false);
-   const [modalContent, setModalContent] = useState<ITask | null>(null);
+   const [modalContent, setModalContent] = useState<ITaskFrom | null>(null);
    const tasksCache = useTaskFetch();
    const router = useRouter();
    const { text } = router.query;
+   useProjectFetch();
 
    function closeModal() {
       setModalContent(null);

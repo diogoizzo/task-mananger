@@ -1,14 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
-import axios from 'axios';
 import dayjs from 'dayjs';
 import { Dispatch, Fragment, SetStateAction, useEffect, useState } from 'react';
 import { Portal } from 'react-portal';
-import { useProjectDispatch } from '../../context/GlobalContext';
-
 import Input from '../atoms/Input';
 import IProject from '../../interfaces/IProject';
-import { ProjectActionsTypes } from '../../reducer/projectReducer';
 import { useRouter } from 'next/router';
+import useProjectService from '../../hooks/useProjectServices';
 
 interface ProjectModalProps {
    modalContent: IProject | null;
@@ -23,7 +20,7 @@ export default function ProjectModal({
    modalContent,
    setModalContent
 }: ProjectModalProps) {
-   const dispatch = useProjectDispatch();
+   const projectServices = useProjectService();
    const [formData, setFormData] = useState({
       startDate: '',
       dueDate: '',
@@ -52,27 +49,17 @@ export default function ProjectModal({
       });
    }
 
-   function createProject() {
-      axios.post('/api/projects', formData).then((res) => {
-         dispatch({
-            type: ProjectActionsTypes.addProject,
-            payload: [res.data]
-         });
-         clearFormData();
-         closeModal();
-         router.push(`/projetos/${res.data.id}`);
-      });
+   async function createProject() {
+      const id = await projectServices.create(formData);
+      clearFormData();
+      closeModal();
+      router.push(`/projetos/${id}`);
    }
-   function updateProject() {
-      axios.put(`/api/projects/${modalContent?.id}`, formData).then((res) => {
-         dispatch({
-            type: ProjectActionsTypes.updateProject,
-            payload: [res.data]
-         });
-         clearFormData();
-         closeModal();
-         router.push(`/projetos/${res.data.id}`);
-      });
+   async function updateProject() {
+      const id = await projectServices.update(modalContent?.id || '', formData);
+      clearFormData();
+      closeModal();
+      router.push(`/projetos/${id}`);
    }
 
    function cancelHandler() {

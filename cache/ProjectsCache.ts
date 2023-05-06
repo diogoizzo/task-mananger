@@ -105,4 +105,10 @@ export default class ProjectsCache implements IProjectsCache {
          payload: [project]
       });
    }
+   create(project: IProject) {
+      this.projectDispatch({
+         type: ProjectActionsTypes.addProject,
+         payload: [project]
+      });
+   }
 }

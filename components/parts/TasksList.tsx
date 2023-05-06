@@ -29,8 +29,6 @@ function TasksList({
    } else {
       orderedTasks = tasksCache?.orderByStatus(status) || [];
    }
-   console.log('Essas são as tarefas do projeto:', tasks);
-   console.log('Essas são as tarefas ordendas:', orderedTasks);
 
    return (
       <section>

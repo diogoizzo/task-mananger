@@ -30,7 +30,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
       <div className="bg-gray-50 min-h-[195px] flex relative shadow-md rounded-md mt-8 ">
          <div className="w-2/3 p-5 flex flex-col justify-start">
             <div>
-               <h2 className="font-semibold text-xl text-indigo-900">
+               <h2 className="font-semibold text-2xl text-indigo-900">
                   {task.title}
                </h2>
                <p className="text-sm text-indigo-800 mt-1">

@@ -35,7 +35,7 @@ export default class Project implements IProject {
       return Math.round((100 * done) / total);
    }
    transformTasks() {
-      this.tasks = this.tasks.map((task: ITask) => {
+      this.tasks = this.tasks?.map((task: ITask) => {
          const {
             id,
             startDate,

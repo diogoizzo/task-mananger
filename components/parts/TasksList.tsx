@@ -4,13 +4,15 @@ import TaskCard from './TaskCard';
 import { ITask } from '../../interfaces/ITask';
 import TasksCache from '../../cache/TasksCache';
 import ITaskFrom from '../../interfaces/ITaskForm';
+import filterAndOrderTask from '../../utils/filterAndOrderTask';
 
 interface TasksProps {
    openModal: () => void;
    setModalContent: Dispatch<SetStateAction<ITaskFrom | null>>;
-   tasksCache: TasksCache;
+   tasksCache?: TasksCache;
    status: string;
    classNameProp?: string;
+   tasks?: ITask[];
 }
 
 function TasksList({
@@ -18,9 +20,18 @@ function TasksList({
    setModalContent,
    openModal,
    status,
-   classNameProp
+   classNameProp,
+   tasks
 }: TasksProps) {
-   const orderedTasks = tasksCache.orderByStatus(status);
+   let orderedTasks: ITask[];
+   if (tasks) {
+      orderedTasks = filterAndOrderTask(tasks, status);
+   } else {
+      orderedTasks = tasksCache?.orderByStatus(status) || [];
+   }
+   console.log('Essas são as tarefas do projeto:', tasks);
+   console.log('Essas são as tarefas ordendas:', orderedTasks);
+
    return (
       <section>
          <div className=" flex relative items-center justify-center  font-sans overflow-y-auto">

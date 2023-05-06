@@ -12,9 +12,19 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
+   const initialTaskForm = {
+      id: task.id || '',
+      startDate: task.startDate || null,
+      dueDate: task.dueDate || null,
+      title: task.title || '',
+      description: task.description || '',
+      status: task.status || '',
+      dependencies: task.dependencies || [],
+      projectId: task.projectId || ''
+   };
    const projectsCache = useProjectsCache();
    const taskServices = useTaskServices();
-   const rightProject = projectsCache.selectByProjectID(task.projetoId || '');
+   const rightProject = projectsCache.selectByProjectID(task.projectId || '');
    const leftTime = task.leftTime || 0;
    return (
       <div className="bg-gray-50 min-h-[195px] flex relative shadow-md rounded-md mt-8 ">
@@ -47,7 +57,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
                </div>
                <div
                   onClick={() => {
-                     setModalContent(task);
+                     setModalContent(initialTaskForm);
                      openModal();
                   }}
                   className="w-5 mr-2 transform hover:text-indigo-500 hover:scale-125 transition-transform"
@@ -113,7 +123,7 @@ function TaskCard({ task, setModalContent, openModal }: TaskCardProps) {
                )}
             </div>
             <div className="mt-3 absolute bottom-0 py-2 w-full justify-self-end text-center font-semibold text-indigo-100 rounded-br-md bg-indigo-900">
-               {`Prazo final em ${task.formatedDueAt}`}
+               {`Prazo final em ${task.formatedDueDate}`}
             </div>
          </div>
       </div>

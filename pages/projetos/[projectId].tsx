@@ -5,7 +5,6 @@ import BtnAdd from '../../components/atoms/BtnAdd';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
-import { ITask } from '../../interfaces/ITask';
 import TasksModal from '../../components/modals/TasksModal';
 import TasksList from '../../components/parts/TasksList';
 import useProjectFetch from '../../hooks/useProjectFetch';
@@ -13,19 +12,19 @@ import { useState } from 'react';
 import DependenciesModal from '../../components/modals/DependenciesModal';
 import IProject from '../../interfaces/IProject';
 import useTaskFetch from '../../hooks/useTaskFetch';
-import useTaskCache from '../../hooks/useTasksCache';
+import ITaskFrom from '../../interfaces/ITaskForm';
 
 function ProjectId() {
-   const [projects] = useProjectFetch();
+   const projectCache = useProjectFetch();
    const [isOpen, setOpen] = useState(false);
-   const [modalContent, setModalContent] = useState<ITask | null>(null);
+   const [modalContent, setModalContent] = useState<ITaskFrom | null>(null);
    const [isModalDependenciesOpen, setModalDependenciesOpen] = useState(false);
    const [dependciesModalContent, setDependenciesModalContent] =
       useState<IProject | null>(null);
 
    const router = useRouter();
-   const activeProject = projects.find(
-      (project) => project.id === router.query.projectId
+   const activeProject = projectCache.selectByProjectID(
+      String(router.query.projectId) || ''
    );
 
    useTaskFetch();
@@ -42,23 +41,6 @@ function ProjectId() {
 
    function openModal() {
       setOpen(true);
-   }
-
-   function toDo() {
-      return (
-         activeProject?.tasks?.filter(
-            (task: ITask) => task.status !== 'concluida'
-         ).length || 0
-      );
-   }
-
-   function percentDone(): number {
-      const done =
-         activeProject?.tasks?.filter(
-            (task: ITask) => task.status === 'concluida'
-         ).length || 0;
-      const total = activeProject?.tasks?.length || 0;
-      return Math.round((100 * done) / total);
    }
 
    return (
@@ -86,11 +68,13 @@ function ProjectId() {
                   <PageTitle title={activeProject?.title || ''} />
 
                   <p className="font-semibold mb-4 mt-2 tracking-wider shadow-sm shadow-indigo-900/50 text-xs bg-indigo-800 w-fit p-1 px-5 uppercase rounded-full text-indigo-100">
-                     {toDo() === 0
+                     {activeProject?.toDo === 0
                         ? 'Todas as tarefas concluídas'
-                        : toDo() > 1
-                        ? `${percentDone()}% concluído - Faltam ${toDo()} tarefas`
-                        : `${percentDone()}% concluído - Falta ${toDo()} tarefa`}
+                        : activeProject && activeProject?.toDo > 1
+                        ? `${activeProject.percentDone}% concluído - Faltam ${activeProject.toDo} tarefas`
+                        : `${
+                             activeProject && activeProject.percentDone
+                          }% concluído - Falta ${activeProject?.toDo} tarefa`}
                   </p>
                   <div className="flex font-medium text-indigo-90 mt-2 border-y border-indigo-100 py-4">
                      <div className="w-full md:w-1/3 text-left  ">

@@ -6,7 +6,7 @@ export default function rightProjectAndTaskIdx(
    task: ITask
 ): [IProject, number] {
    const projectIdx = projects.findIndex(
-      (project) => project.id === task.projetoId
+      (project) => project.id === task.projectId
    );
    const taskIdx = projects[projectIdx]?.tasks.findIndex(
       (item) => item.id === task.id

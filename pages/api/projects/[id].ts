@@ -11,7 +11,7 @@ export default async function handler(
 
    if (req.method === 'DELETE') {
       if (token) {
-         const deletedProject = await prisma.projeto.delete({
+         const deletedProject = await prisma.project.delete({
             where: {
                id: String(id)
             }
@@ -26,7 +26,7 @@ export default async function handler(
       }
    } else if (req.method === 'PUT') {
       if (token) {
-         const updatedProject = await prisma.projeto.update({
+         const updatedProject = await prisma.project.update({
             where: {
                id: String(id)
             },
@@ -46,7 +46,7 @@ export default async function handler(
       }
    } else if (req.method === 'PATCH') {
       if (token) {
-         const completedProject = await prisma.projeto.update({
+         const completedProject = await prisma.project.update({
             where: {
                id: String(id)
             },

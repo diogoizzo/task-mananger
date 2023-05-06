@@ -9,7 +9,7 @@ export default async function handler(
    if (req.method === 'GET') {
       const token = await getToken({ req });
       if (token) {
-         const tarefas = await prisma.tarefa.findMany({
+         const tasks = await prisma.task.findMany({
             where: {
                userId: String(token.id)
             },
@@ -18,8 +18,8 @@ export default async function handler(
                isDependencyOf: true
             }
          });
-         if (tarefas) {
-            res.status(200).json(tarefas);
+         if (tasks) {
+            res.status(200).json(tasks);
          } else {
             res.status(404).json({ error: 'Not Found' });
          }
@@ -35,7 +35,7 @@ export default async function handler(
             project === 'Não pertence a nenhum projeto'
                ? null
                : String(project);
-         const tarefa = await prisma.tarefa.create({
+         const tarefa = await prisma.task.create({
             data: {
                title: title,
                description: description,
@@ -43,7 +43,7 @@ export default async function handler(
                startDate: new Date(startDate),
                dueDate: new Date(dueDate),
                userId: String(token.id),
-               projetoId: hasProject
+               projectId: hasProject
             }
          });
          res.status(201).json(tarefa);

@@ -11,7 +11,7 @@ export default async function handler(
 
    if (req.method === 'DELETE') {
       if (token) {
-         const deletedTask = await prisma.tarefa.delete({
+         const deletedTask = await prisma.task.delete({
             where: {
                id: String(id)
             }
@@ -29,7 +29,7 @@ export default async function handler(
          let updatedTask;
          if (req.body.hasOwnProperty('newDependencies')) {
             const { newDependencies } = req.body;
-            updatedTask = await prisma.tarefa.update({
+            updatedTask = await prisma.task.update({
                where: {
                   id: String(id)
                },
@@ -50,13 +50,13 @@ export default async function handler(
                   ? null
                   : String(project);
 
-            updatedTask = await prisma.tarefa.update({
+            updatedTask = await prisma.task.update({
                where: {
                   id: String(id)
                },
                data: {
                   ...form,
-                  projetoId: hasProject,
+                  projectId: hasProject,
                   startDate: new Date(req.body.startDate),
                   dueDate: new Date(req.body.dueDate)
                }
@@ -73,7 +73,7 @@ export default async function handler(
    } else if (req.method === 'PATCH') {
       if (token) {
          const { status } = req.body;
-         const completedTask = await prisma.tarefa.update({
+         const completedTask = await prisma.task.update({
             where: {
                id: String(id)
             },

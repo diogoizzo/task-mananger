@@ -9,17 +9,87 @@ export default class Task implements ITask {
       public title: string,
       public description: string,
       public status: string,
-      public dependencies: ITask[],
+      public dependencies?: ITask[],
       public createdAt?: Date,
       public dueAt?: Date,
-      public projetoId?: string,
+      public projectId?: string,
       public isDependencyOf?: ITask[]
-   ) {}
-
+   ) {
+      this.transformeDependencies();
+      this.transformeIsDependencyOf();
+   }
+   transformeDependencies() {
+      if (this.dependencies && this.dependencies.length > 0) {
+         this.dependencies = this.dependencies.map((task: ITask) => {
+            const {
+               id,
+               startDate,
+               dueDate,
+               title,
+               description,
+               status,
+               dependencies,
+               createdAt,
+               dueAt,
+               projectId,
+               isDependencyOf
+            } = task;
+            return new Task(
+               id,
+               startDate,
+               dueDate,
+               title,
+               description,
+               status,
+               dependencies,
+               createdAt,
+               dueAt,
+               projectId,
+               isDependencyOf
+            );
+         });
+      }
+   }
+   transformeIsDependencyOf() {
+      if (this.isDependencyOf && this.isDependencyOf.length > 0) {
+         this.isDependencyOf = this.isDependencyOf.map((task: ITask) => {
+            const {
+               id,
+               startDate,
+               dueDate,
+               title,
+               description,
+               status,
+               dependencies,
+               createdAt,
+               dueAt,
+               projectId,
+               isDependencyOf
+            } = task;
+            return new Task(
+               id,
+               startDate,
+               dueDate,
+               title,
+               description,
+               status,
+               dependencies,
+               createdAt,
+               dueAt,
+               projectId,
+               isDependencyOf
+            );
+         });
+      }
+   }
    get leftTime() {
       return Number(dayjs(this.dueDate).diff(dayjs(), 'day'));
    }
    get formatedDueAt() {
+      return dayjs(this.dueAt).format('DD/MM/YYYY');
+   }
+
+   get formatedDueDate() {
       return dayjs(this.dueDate).format('DD/MM/YYYY');
    }
 
@@ -40,7 +110,7 @@ export default class Task implements ITask {
          dependencies,
          createdAt,
          dueAt,
-         projetoId,
+         projectId,
          isDependencyOf
       } = task;
       return new Task(
@@ -53,7 +123,7 @@ export default class Task implements ITask {
          dependencies,
          createdAt,
          dueAt,
-         projetoId,
+         projectId,
          isDependencyOf
       );
    }

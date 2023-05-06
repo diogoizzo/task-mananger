@@ -54,9 +54,9 @@ export default function TasksModal({
             title: modalContent.title,
             description: modalContent.description,
             status: modalContent.status,
-            project: modalContent.projetoId ?? ' '
+            project: modalContent.projectId ?? ' '
          });
-         projectBeforeAlterationId.current = modalContent.projetoId;
+         projectBeforeAlterationId.current = modalContent.projectId;
       }
       if (activeProject) {
          setFormData((prev) => ({

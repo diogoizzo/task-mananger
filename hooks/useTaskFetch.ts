@@ -13,10 +13,12 @@ export default function useTaskFetch(): TasksCache {
          axios
             .get('/api/tasks', { signal: controller.signal })
             .then((res) => {
-               dispatch({
-                  type: TasksActionsTypes.addTask,
-                  payload: res.data
-               });
+               if (res.data.length > 0) {
+                  dispatch({
+                     type: TasksActionsTypes.addTask,
+                     payload: res.data
+                  });
+               }
             })
             .catch((error) => {
                console.log(error);

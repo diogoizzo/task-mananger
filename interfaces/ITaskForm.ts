@@ -9,5 +9,5 @@ export default interface ITaskFrom {
    status: string;
    dependencies: ITask[];
    project?: string;
-   projetoId?: string;
+   projectId?: string;
 }

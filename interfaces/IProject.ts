@@ -11,4 +11,6 @@ export default interface IProject {
    tasks: ITask[];
    description: string;
    leftTime?: number;
+   toDo: number;
+   percentDone?: number;
 }

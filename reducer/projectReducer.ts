@@ -1,3 +1,4 @@
+import Project from '../entities/Project';
 import IProject from '../interfaces/IProject';
 
 export enum ProjectActionsTypes {
@@ -15,7 +16,14 @@ export default function projectReducer(
    state: IProject[],
    action: ProjectActions
 ) {
-   const { type, payload } = action;
+   let { type, payload } = action;
+   if (payload.length > 1) {
+      payload = payload.map<Project>((project: IProject) => {
+         return Project.createFromObject(project);
+      });
+   } else if (payload.length === 1) {
+      payload = [Project.createFromObject(payload[0])];
+   }
    switch (type) {
       case ProjectActionsTypes.addProject:
          return [...state, ...payload];

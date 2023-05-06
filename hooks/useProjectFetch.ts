@@ -18,10 +18,12 @@ export default function useProjectFetch(): ProjectsCache {
          axios
             .get('/api/projects', { signal: controller.signal })
             .then((res) => {
-               projectDispatch({
-                  type: ProjectActionsTypes.addProject,
-                  payload: res.data
-               });
+               if (res.data.length > 0) {
+                  projectDispatch({
+                     type: ProjectActionsTypes.addProject,
+                     payload: res.data
+                  });
+               }
             })
             .catch((error) => {
                console.log(error);

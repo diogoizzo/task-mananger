@@ -10,10 +10,11 @@ export interface ITask {
    status: string;
    leftTime: number;
    dueAt?: Date;
-   projetoId?: string;
-   dependencies: ITask[];
+   projectId?: string;
+   dependencies?: ITask[];
    isDependencyOf?: ITask[];
    formatedDueAt: string;
    formatedCreatedAt: string;
    formatedStartDate: string;
+   formatedDueDate: string;
 }

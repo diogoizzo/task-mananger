@@ -14,7 +14,7 @@ export default class TaskServices implements ITaskServices {
    create(formData: object) {
       axios.post('/api/tasks', formData).then((res) => {
          this.tasksCache.create(res.data);
-         this.projectsCache.includeTaskInProject(res.data.projetoId, res.data);
+         this.projectsCache.includeTaskInProject(res.data.projectId, res.data);
       });
    }
    update(currentId: string, modalContentId: string, formData: object) {
@@ -67,12 +67,16 @@ export default class TaskServices implements ITaskServices {
    findFreeTask(task: ITask) {
       task.isDependencyOf &&
          task.isDependencyOf.forEach((dependentTask: ITask) => {
-            const countActiveDependencies = dependentTask?.dependencies.reduce(
-               (acc: number, taskDepedency: ITask) => {
-                  return taskDepedency.status !== 'concluida' ? acc + 1 : acc;
-               },
-               0
-            );
+            const countActiveDependencies =
+               dependentTask.dependencies &&
+               dependentTask?.dependencies.reduce(
+                  (acc: number, taskDepedency: ITask) => {
+                     return taskDepedency.status !== 'concluida'
+                        ? acc + 1
+                        : acc;
+                  },
+                  0
+               );
             if (countActiveDependencies === 0) {
                this.changeStatus(dependentTask, 'proximasAcoes');
             }

@@ -9,12 +9,12 @@ export default async function handler(
    if (req.method === 'GET') {
       const token = await getToken({ req });
       if (token) {
-         const projects = await prisma.projeto.findMany({
+         const projects = await prisma.project.findMany({
             where: {
                userId: String(token.id)
             },
             include: {
-               tarefas: {
+               tasks: {
                   include: {
                      dependencies: true,
                      isDependencyOf: true
@@ -34,7 +34,7 @@ export default async function handler(
       const token = await getToken({ req });
       if (token) {
          const { title, description, startDate, dueDate } = req.body;
-         const tarefa = await prisma.projeto.create({
+         const tarefa = await prisma.project.create({
             data: {
                title: title,
                description: description,

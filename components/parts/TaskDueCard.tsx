@@ -7,7 +7,7 @@ type TaskDueCardProps = {
 
 function TaskDueCard({ task }: TaskDueCardProps) {
    const projectsCache = useProjectsCache();
-   const rightProject = projectsCache.selectByProjectID(task.projetoId || '');
+   const rightProject = projectsCache.selectByProjectID(task.projectId || '');
 
    return (
       <div className="bg-gray-50 relative  overflow-hidden flex  w-full shadow-md rounded-md mt-8 ">
@@ -19,7 +19,7 @@ function TaskDueCard({ task }: TaskDueCardProps) {
                <p className="ml-5 px-3 font-semibold mt-2 tracking-wider shadow-sm shadow-indigo-900/50 text-xs bg-indigo-800 w-fit p-1  rounded-full text-indigo-100 ">
                   {rightProject?.title
                      ? rightProject.title
-                     : 'Essas tarefa não pertencia a nenhum projeto'}
+                     : 'Essa tarefa não pertencia a nenhum projeto'}
                </p>
                <p className="px-5 pt-6 text-sm text-indigo-800 text-justify">
                   {task.description}
